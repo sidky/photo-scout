@@ -17,9 +17,9 @@ sealed class PhotoDetailItem {
             items.add(Title(photoInfo.title.content))
             items.add(Owner(photoInfo.owner.realname))
             items.add(Description(photoInfo.description.content))
-//            photoInfo.location?.let {
-//                items.add(Location(latitude = it.latitude, longitude = it.longitude))
-//            }
+            photoInfo.location?.let {
+                items.add(Location(latitude = it.latitude, longitude = it.longitude))
+            }
 //            photoInfo.tag?.tag?.let {
 //                items.add(Tags(it))
 //            }

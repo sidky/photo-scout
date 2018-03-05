@@ -13,6 +13,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [google_maps_api_key: Secret.API_KEY_GOOGLE]
     }
     buildTypes {
         release {

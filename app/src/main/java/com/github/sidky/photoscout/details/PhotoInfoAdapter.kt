@@ -7,13 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.github.sidky.photoscout.R
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
+import java.util.*
 
 abstract class AbstractInfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: PhotoDetailItem)
 }
 
 enum class InfoItemType {
-    TITLE, OWNER, DESCRIPTION
+    TITLE, OWNER, DESCRIPTION, LOCATION
 }
 
 class TextInfoViewHolder(val view: TextView): AbstractInfoViewHolder(view) {
@@ -28,12 +37,61 @@ class TextInfoViewHolder(val view: TextView): AbstractInfoViewHolder(view) {
     }
 }
 
+class LocationInfoViewHolder(val mapView: MapView): AbstractInfoViewHolder(mapView), OnMapReadyCallback {
+
+    var map: GoogleMap? = null
+
+    override fun onMapReady(map: GoogleMap?) {
+        MapsInitializer.initialize(mapView.context.applicationContext)
+        this.map = map
+        if (map != null) {
+            setLocation()
+        }
+    }
+
+    init {
+        mapView.onCreate(null)
+        mapView.getMapAsync(this)
+    }
+
+    override fun bind(item: PhotoDetailItem) {
+        if (item is PhotoDetailItem.Location) {
+            val location = LatLng(item.latitude, item.longitude)
+            mapView.setTag(TAG_ID, location)
+            setLocation()
+        }
+    }
+
+    private fun setLocation() {
+        val map = this.map
+
+        if (map != null) {
+            val location = mapView.getTag(TAG_ID) as LatLng?
+
+            if (location != null) {
+                Log.i("MAP", "Moving to: (${location.latitude}, ${location.longitude})")
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13.0f))
+                map.addMarker(MarkerOptions().position(location))
+
+                map.mapType = GoogleMap.MAP_TYPE_NORMAL
+            }
+        }
+
+    }
+
+
+    companion object {
+        val TAG_ID = UUID.randomUUID().leastSignificantBits.toInt()
+    }
+}
+
 class PhotoInfoAdapter : RecyclerView.Adapter<AbstractInfoViewHolder>() {
     override fun getItemViewType(position: Int): Int =
         when (items.get(position)) {
             is PhotoDetailItem.Title -> InfoItemType.TITLE
             is PhotoDetailItem.Description -> InfoItemType.DESCRIPTION
             is PhotoDetailItem.Owner -> InfoItemType.OWNER
+            is PhotoDetailItem.Location -> InfoItemType.LOCATION
             else -> null
         }?.ordinal ?: -1
 
@@ -57,6 +115,10 @@ class PhotoInfoAdapter : RecyclerView.Adapter<AbstractInfoViewHolder>() {
             InfoItemType.DESCRIPTION -> {
                 val v = inflator.inflate(R.layout.info_description, parent, false) as TextView
                 TextInfoViewHolder(v)
+            }
+            InfoItemType.LOCATION -> {
+                val v = inflator.inflate(R.layout.info_location, parent, false) as MapView
+                LocationInfoViewHolder(v)
             }
         }
     }
