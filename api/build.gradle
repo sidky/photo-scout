@@ -2,17 +2,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 27
-
-
+    compileSdkVersion Versions.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 27
+        minSdkVersion Versions.minSdkVersion
+        targetSdkVersion Versions.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_KEY_FLICKR", "\"${Secret.API_KEY_FLICKR}\""
 
     }
 
@@ -28,21 +28,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-moshi:$rootProject.ext.retrofitVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofitVersion"
-    implementation "com.squareup.moshi:moshi:$rootProject.ext.moshiVersion"
-    implementation "com.squareup.moshi:moshi-kotlin:$rootProject.ext.moshiVersion"
+    implementation Deps.retrofit
+    implementation Deps.retrofitMoshi
+    implementation Deps.moshi
+    implementation Deps.moshiKotlin
 
     // https://github.com/square/moshi/issues/323
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.2.21"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "org.koin:koin-android:$rootProject.ext.koinVersion"
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
+    implementation Deps.kotlinReflect
+    implementation Deps.kotlinStdlib
+    implementation Deps.koin
+    implementation Deps.rxjava
 }
 repositories {
     mavenCentral()

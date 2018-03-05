@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion Versions.compileSdkVersion
     defaultConfig {
         applicationId "com.github.sidky.photoscout"
-        minSdkVersion 21
-        targetSdkVersion 27
+        minSdkVersion Versions.minSdkVersion
+        targetSdkVersion Versions.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -24,15 +24,29 @@ android {
 
 dependencies {
     implementation project(':api')
+    implementation project(':data')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
-    implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation Deps.kotlinStdlib
+    implementation Deps.appCompat
+    implementation Deps.recyclerView
+    implementation Deps.design
 
-    implementation "org.koin:koin-android:$rootProject.ext.koinVersion"
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
+    implementation Deps.koin
+    implementation Deps.rxjava
+    implementation Deps.rxAndroid
+
+    implementation Deps.paging
+
+    implementation Deps.stetho
+
+    implementation Deps.glide
+    kapt Deps.glideCompiler
+
+    implementation Deps.timber
+
+    implementation Deps.flexbox
+    implementation Deps.androidKtx
+
+    implementation Deps.maps
 }

@@ -1,5 +1,6 @@
 package com.github.sidky.photoscout.api.koin
 
+import com.github.sidky.photoscout.api.BuildConfig
 import com.github.sidky.photoscout.api.FlickrApi
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -11,10 +12,10 @@ val apiModule = applicationContext {
     }
 
     provide("flickr.apikey") {
-        "6d7147d96585c88cd7795c303027c6e4"
+        BuildConfig.API_KEY_FLICKR
     }
 
     provide {
-        FlickrApi.service(get("flickr.apikey"), get())
+        FlickrApi.service(apiKey = get("flickr.apikey"), moshi = get())
     }
 }

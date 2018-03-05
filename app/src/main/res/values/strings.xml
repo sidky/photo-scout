@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Photo Scout</string>
+    <string name="by_author">by %1$s</string>
 </resources>
