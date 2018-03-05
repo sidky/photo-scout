@@ -4,7 +4,9 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.transition.Transition
 import android.util.Log
+import android.view.Gravity
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -50,6 +52,29 @@ class PhotoDetailsActivity : AppCompatActivity() {
                     }
 
                 }).into(photo_view)
+
+        window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
+            override fun onTransitionEnd(transition: Transition?) {
+                drawer.openDrawer(Gravity.END)
+            }
+
+            override fun onTransitionResume(transition: Transition?) {
+                // Stub
+            }
+
+            override fun onTransitionPause(transition: Transition?) {
+                // Stub
+            }
+
+            override fun onTransitionCancel(transition: Transition?) {
+                // Stub
+            }
+
+            override fun onTransitionStart(transition: Transition?) {
+                // Stub
+            }
+
+        })
 
         val llm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         info_items.layoutManager = llm

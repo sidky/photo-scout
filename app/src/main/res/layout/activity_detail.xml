@@ -14,7 +14,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/info_items"
         android:background="#1F000000"
-        android:padding="10dp"
+        android:padding="20dp"
         android:layout_gravity="end"
         android:layout_width="240dp"
         android:layout_height="match_parent"/>
