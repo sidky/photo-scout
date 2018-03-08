@@ -37,12 +37,28 @@ class PhotoBoundaryCallback(
             _cancelled = value
         }
 
-    var nextPage: Int = 0
+    var nextPage: Int = 1
     var totalPage: Int = -1
 
+    init {
+        loadPage(1)
+    }
 
     override fun onZeroItemsLoaded() {
-        queue.submit(networkCall(1), object : RequestCallback {
+        loadPage(1)
+    }
+
+    override fun onItemAtEndLoaded(itemAtEnd: PhotoWithSize) {
+        if (totalPage > 0 && totalPage >= nextPage) {
+            Log.i("Boundary", "Load page: $nextPage")
+            loadPage(nextPage)
+        } else {
+            Log.i("Boundary", "No more page to load")
+        }
+    }
+
+    fun loadPage(page: Int) {
+        queue.submit(networkCall(page), object : RequestCallback {
             override fun succeed(response: PhotoListResponse) {
                 if (!cancelled) {
                     addToDb(response)
@@ -50,30 +66,10 @@ class PhotoBoundaryCallback(
             }
 
             override fun failed(error: NetworkError) {
-                Log.e("Boundary", error.toString())
+                // Retry?
             }
 
         })
-    }
-
-    override fun onItemAtEndLoaded(itemAtEnd: PhotoWithSize) {
-        if (totalPage > 0 && totalPage >= nextPage) {
-            Log.i("Boundary", "Load page: $nextPage")
-            queue.submit(networkCall(nextPage), object : RequestCallback {
-                override fun succeed(response: PhotoListResponse) {
-                    if (!cancelled) {
-                        addToDb(response)
-                    }
-                }
-
-                override fun failed(error: NetworkError) {
-                    // Retry?
-                }
-
-            })
-        } else {
-            Log.i("Boundary", "No more page to load")
-        }
     }
 
     override fun onItemAtFrontLoaded(itemAtFront: PhotoWithSize) {

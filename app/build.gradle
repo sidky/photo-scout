@@ -36,6 +36,7 @@ dependencies {
 
     implementation Deps.koin
     implementation Deps.rxjava
+    implementation Deps.rxkotlin
     implementation Deps.rxAndroid
 
     implementation Deps.paging
@@ -51,4 +52,6 @@ dependencies {
     implementation Deps.androidKtx
 
     implementation Deps.maps
+
+    implementation Deps.constraintLayout
 }

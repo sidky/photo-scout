@@ -3,7 +3,7 @@ object Versions {
     val minSdkVersion = 21
     val targetSdkVersion = 27
     val kotlinVersion = "1.2.21"
-    val gradleVersion = "3.2.0-alpha04"
+    val gradleVersion = "3.2.0-alpha05"
 
     val koinVersion = "0.8.2"
     val liveDataVersion = "1.1.0"
@@ -11,6 +11,7 @@ object Versions {
     val retrofitVersion = "2.3.0"
     val roomVersion = "1.1.0-alpha3"
     val rxJavaVersion = "2.1.10"
+    val rxKotlinVersion = "2.2.0"
     val rxAndroidVersion = "2.0.2"
     val pagingVersion = "1.0.0-alpha6"
     val stethoVersion = "1.5.0"
@@ -27,6 +28,7 @@ object Versions {
     val androidKtxVersion = "0.2"
 
     val playServicesVersion = "11.8.0"
+    val constraintLayoutVersion = "1.0.2"
 }
 
 object Deps {
@@ -43,6 +45,7 @@ object Deps {
     val koin = "org.koin:koin-android:${Versions.koinVersion}"
 
     val rxjava = "io.reactivex.rxjava2:rxjava:${Versions.rxJavaVersion}"
+    val rxkotlin = "io.reactivex.rxjava2:rxkotlin:${Versions.rxKotlinVersion}"
     val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxAndroidVersion}"
 
     val livedata = "android.arch.lifecycle:livedata:${Versions.liveDataVersion}"
@@ -70,4 +73,6 @@ object Deps {
     val androidKtx = "androidx.core:core-ktx:${Versions.androidKtxVersion}"
 
     val maps = "com.google.android.gms:play-services-maps:${Versions.playServicesVersion}"
+
+    val constraintLayout = "com.android.support.constraint:constraint-layout:${Versions.constraintLayoutVersion}"
 }

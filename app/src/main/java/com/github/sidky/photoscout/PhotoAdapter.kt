@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.Target
 import com.github.sidky.photoscout.data.entity.PhotoWithSize
 import com.github.sidky.photoscout.details.PhotoDetails
 import com.github.sidky.photoscout.details.PhotoDetailsActivity
+import com.google.android.flexbox.FlexboxLayoutManager
 
 data class PhotoViewHolder(val view: AppCompatImageView) : RecyclerView.ViewHolder(view)
 
@@ -40,8 +41,14 @@ class PhotoAdapter : PagedListAdapter<PhotoWithSize, PhotoViewHolder>(PhotoDiffC
         val photo : PhotoWithSize? = getItem(position)
         val largest = photo?.largestImage()
 
+        val lp = holder.view.layoutParams
+        if (lp is FlexboxLayoutManager.LayoutParams) {
+            lp.flexGrow = 1.0f
+            holder.view.layoutParams = lp
+        }
+
         if (photo != null && largest != null) {
-            val requestOptions = RequestOptions().override(Target.SIZE_ORIGINAL).fitCenter()
+            val requestOptions = RequestOptions().override(Target.SIZE_ORIGINAL).centerCrop()
             Glide.with(holder.view)
                     .load(photo.smallestImage(minDimension)?.url).apply(requestOptions)
                     .into(holder.view)
