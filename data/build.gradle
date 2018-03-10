@@ -46,6 +46,12 @@ dependencies {
 
     implementation Deps.timber
 }
+
+kapt {
+        arguments {
+            arg("room.schemaLocation",  "$projectDir/schemas".toString())
+        }
+}
 repositories {
     mavenCentral()
     google()
