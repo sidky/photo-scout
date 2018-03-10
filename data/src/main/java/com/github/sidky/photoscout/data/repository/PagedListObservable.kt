@@ -61,7 +61,11 @@ class PagedListObservable(val dao: PhotoDao,
 
         do {
             val dataSource = newDataSource()
-            pagedList = PagedList.Builder<Int, PhotoWithSize>(dataSource, 10)
+            val config = PagedList.Config.Builder()
+                    .setPageSize(10)
+//                    .setEnablePlaceholders(false)
+                    .build()
+            pagedList = PagedList.Builder<Int, PhotoWithSize>(dataSource, config)
                     .setBoundaryCallback(callback)
                     .setBackgroundThreadExecutor(backgroundThreadExecutor)
                     .setMainThreadExecutor(mainThreadExecutor)

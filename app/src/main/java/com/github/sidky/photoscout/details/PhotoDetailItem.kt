@@ -21,7 +21,7 @@ sealed class PhotoDetailItem {
                 items.add(Location(latitude = it.latitude, longitude = it.longitude))
             }
 //            photoInfo.tag?.tag?.let {
-//                items.add(Tags(it))
+//                existingItems.add(Tags(it))
 //            }
 
             return items

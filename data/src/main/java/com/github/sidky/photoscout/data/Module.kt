@@ -55,5 +55,5 @@ val dataModule = applicationContext {
 
     provide("executor.background") {
         Executors.newSingleThreadExecutor()
-    }
+    } bind Executor::class
 }

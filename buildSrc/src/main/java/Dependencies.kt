@@ -5,7 +5,7 @@ object Versions {
     val kotlinVersion = "1.2.21"
     val gradleVersion = "3.2.0-alpha05"
 
-    val koinVersion = "0.8.2"
+    val koinVersion = "0.9.0"
     val liveDataVersion = "1.1.0"
     val moshiVersion = "1.5.0"
     val retrofitVersion = "2.3.0"
@@ -29,6 +29,8 @@ object Versions {
 
     val playServicesVersion = "11.8.0"
     val constraintLayoutVersion = "1.0.2"
+
+    val mapUtilVersion = "0.5"
 }
 
 object Deps {
@@ -73,6 +75,7 @@ object Deps {
     val androidKtx = "androidx.core:core-ktx:${Versions.androidKtxVersion}"
 
     val maps = "com.google.android.gms:play-services-maps:${Versions.playServicesVersion}"
+    val mapUtils = "com.google.maps.android:android-maps-utils:${Versions.mapUtilVersion}"
 
     val constraintLayout = "com.android.support.constraint:constraint-layout:${Versions.constraintLayoutVersion}"
 }

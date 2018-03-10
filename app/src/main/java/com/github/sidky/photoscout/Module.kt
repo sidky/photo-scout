@@ -1,14 +1,20 @@
 package com.github.sidky.photoscout
 
+import com.github.sidky.photoscout.data.repository.FlickrPhotoRepository
 import com.github.sidky.photoscout.details.PhotoDetailsPresenter
 import org.koin.dsl.module.applicationContext
 
 val appModule = applicationContext {
-    provide {
-        PhotoPresenter(get())
+
+    context("photo.list") {
+        bean {
+            PhotoPresenter(get())
+        }
     }
 
-    provide {
-        PhotoDetailsPresenter(flickrRepository = get())
+    context("photo.details") {
+        bean {
+            PhotoDetailsPresenter(flickrRepository = get())
+        }
     }
 }

@@ -32,6 +32,7 @@ class FlickrPhotoRepository(
                 dao = dao,
                 flickrApi = flickrApi,
                 queue = requestQueue)
+        dao.clearPhotos()
         val dataSourceFactory = dao.photos()
         return PagedListObservable(dao, dataSourceFactory, boundaryCallback, mainThreadExecutor, backgroundThreadExecutor)
     }

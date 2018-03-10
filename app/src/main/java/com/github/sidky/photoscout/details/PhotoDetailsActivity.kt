@@ -19,8 +19,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_detail.*
 import org.koin.android.ext.android.inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.releaseContext
 
-class PhotoDetailsActivity : AppCompatActivity() {
+class PhotoDetailsActivity : AppCompatActivity(), KoinComponent {
 
     private val presenter: PhotoDetailsPresenter by inject()
 
@@ -85,7 +87,7 @@ class PhotoDetailsActivity : AppCompatActivity() {
                 .map { PhotoDetailItem.generateItems(it)}
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { list ->
-                    Log.i("INFO", "items: ${list}")
+                    Log.i("INFO", "existingItems: ${list}")
                     adapter.items = list
                 }
 
@@ -96,6 +98,8 @@ class PhotoDetailsActivity : AppCompatActivity() {
         super.onDestroy()
 
         compositeDisposable.dispose()
+
+        releaseContext("photo.details")
     }
 
     companion object {

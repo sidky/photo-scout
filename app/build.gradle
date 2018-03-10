@@ -52,6 +52,7 @@ dependencies {
     implementation Deps.androidKtx
 
     implementation Deps.maps
+    implementation Deps.mapUtils
 
     implementation Deps.constraintLayout
 }
