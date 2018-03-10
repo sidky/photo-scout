@@ -18,6 +18,7 @@ val dataModule = applicationContext {
     provide {
         Room.databaseBuilder(get<Context>(), PhotoDatabase::class.java, "photo.db")
                 .addMigrations(PhotoDatabase.MIGRATION_1_2)
+                .addMigrations(PhotoDatabase.MIGRATION_2_3)
                 .build()
     } bind PhotoDatabase::class
 

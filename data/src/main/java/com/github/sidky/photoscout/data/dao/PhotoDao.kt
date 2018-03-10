@@ -12,6 +12,7 @@ import com.github.sidky.photoscout.data.entity.PhotoWithSize
 interface PhotoDao {
 
     @Query("SELECT * FROM photo ORDER BY order_id")
+    @Transaction
     fun photos(): DataSource.Factory<Int, PhotoWithSize>
 
     @Query("DELETE FROM photo")

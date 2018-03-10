@@ -17,7 +17,8 @@ data class Photo(@PrimaryKey val id: Long,
             ForeignKey(entity = Photo::class,
             parentColumns = ["id"],
             childColumns = ["photo_id"],
-            onDelete = CASCADE)])
+            onDelete = CASCADE)],
+        indices = [(Index("photo_id", name="photo_size_id"))])
 data class PhotoSize(@PrimaryKey(autoGenerate = true) val id: Long = 0L,
                      @ColumnInfo(name = "photo_id") val photoId: Long,
                      val url: String,
