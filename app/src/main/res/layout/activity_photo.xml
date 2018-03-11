@@ -44,14 +44,37 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
                 android:background="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="@+id/search_text"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/search_text"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_map_black_24dp"
                 android:contentDescription="@string/content_switch_to_map_mode" />
+
+            <ImageButton
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_refresh_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/switch_button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/refresh_progress"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/refresh"
+                app:layout_constraintTop_toTopOf="parent"
+                android:indeterminate="true"
+                android:padding="0dp"
+                android:indeterminateDrawable="@drawable/loading_progress"/>
 
             <!--<AutoCompleteTextView-->
                 <!--android:id="@+id/locati"-->

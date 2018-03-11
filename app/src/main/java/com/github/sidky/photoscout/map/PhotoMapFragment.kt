@@ -1,12 +1,17 @@
 package com.github.sidky.photoscout.map
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -133,6 +138,7 @@ class PhotoMapFragment : Fragment() {
 
             val disposable = presenter
                     .photos
+                    .observeOn(AndroidSchedulers.mainThread())
                     .map {
                         listAdapter.submitList(it)
                         it.filterNotNull().filter { it.location != null }.map { PhotoClusterItem(it) }
@@ -143,12 +149,13 @@ class PhotoMapFragment : Fragment() {
                     }
             compositeDisposable?.add(disposable)
 
-//            map.setOnCameraMoveListener {
-//                Log.e("CAMERA", "MOVED")
-//                val bounds = map.projection.visibleRegion.latLngBounds
-//                val boundingBox = BoundingBox(bounds.southwest.longitude, bounds.southwest.latitude, bounds.northeast.longitude, bounds.northeast.latitude)
-//                presenter.moveMap(boundingBox)
-//            }
+            map.setOnCameraMoveListener {
+                Log.e("CAMERA", "MOVED")
+                val bounds = map.projection.visibleRegion.latLngBounds
+                val boundingBox = BoundingBox(bounds.southwest.longitude, bounds.southwest.latitude, bounds.northeast.longitude, bounds.northeast.latitude)
+                presenter.moveMap(boundingBox)
+            }
+            enableMyLocation()
         }
 
         Log.e("COUNT", "clusters: ${adapter?.numClusters()}")
@@ -190,6 +197,26 @@ class PhotoMapFragment : Fragment() {
         compositeDisposable?.dispose()
     }
 
+    private fun enableMyLocation() {
+        val activity = this.activity
+        if (activity != null) {
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST)
+            } else {
+                map?.isMyLocationEnabled = true
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            map?.isMyLocationEnabled = true
+        } else {
+            AlertDialog.Builder(activity!!).setMessage("WTF").create().show()
+        }
+    }
+
     class PhotoClusterItem(val photo: PhotoWithSize) : ClusterItem {
         override fun getSnippet(): String = ""
 
@@ -207,5 +234,9 @@ class PhotoMapFragment : Fragment() {
         override fun toString(): String {
             return "PhotoClusterItem(photo=$photo)"
         }
+    }
+
+    companion object {
+        val LOCATION_PERMISSION_REQUEST = 23312
     }
 }

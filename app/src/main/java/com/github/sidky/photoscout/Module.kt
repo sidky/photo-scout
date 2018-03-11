@@ -8,7 +8,7 @@ val appModule = applicationContext {
 
     context("photo.list") {
         bean {
-            PhotoPresenter(get())
+            PhotoPresenter(get(), get())
         }
     }
 

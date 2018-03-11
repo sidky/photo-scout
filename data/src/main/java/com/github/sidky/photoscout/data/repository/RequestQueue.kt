@@ -42,7 +42,7 @@ class RequestQueue(private val scheduler: Scheduler) {
         if (compositeDisposable.isDisposed) {
             throw IllegalStateException("Queue has already been unsubscribed")
         }
-        _stateSubject.onNext(QueueState(false))
+        _stateSubject.onNext(QueueState(true))
 
         val disposable = subject.toSerialized()
                 .observeOn(scheduler)
