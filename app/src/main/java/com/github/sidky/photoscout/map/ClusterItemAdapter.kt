@@ -4,43 +4,73 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.util.ArraySet
+import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.ClusterManager
 import kotlin.math.max
 import kotlin.math.min
 
-class ClusterItemAdapter<T : ClusterItem>(context: Context?,
+abstract class ClusterItemAdapter<T : ClusterItem>(context: Context?,
                                           val map: GoogleMap,
-                                          cmp: EqualComparator<T>) {
+                                          cmp: EqualComparator<T>) : AbstractClusterRenderer.ItemRenderer<T> {
 
-    private val clusterManager: ClusterManager<T>
-    private val itemManager: ClusterItemManager<T>
+    private val clusterManager: ClusterManager<T> = ClusterManager(context, map)
+    private val itemManager: ClusterItemManager<T> = ClusterItemManager.DefaultClusterItemManager(cmp)
     private val mainThreadHandler = Handler(Looper.getMainLooper())
+    private val renderer = AbstractClusterRenderer<T>(context, map, clusterManager, this)
 
     init {
-        clusterManager = ClusterManager(context, map)
-        itemManager = ClusterItemManager.DefaultClusterItemManager(cmp)
-
         map.setOnCameraIdleListener(clusterManager)
         map.setOnMarkerClickListener(clusterManager)
+        clusterManager.renderer = renderer
     }
+
 
     fun submitList(items: List<T>) {
-        val diff = itemManager.submitList(items)
-
         mainThreadHandler.post {
-            diff.deletes.forEach {
-                clusterManager.removeItem(it)
-            }
-            clusterManager.addItems(diff.inserts)
+            clusterManager.clearItems()
+            map.clear()
+//            map.clear()
 
-            map.moveCamera(CameraUpdateFactory.newLatLngBounds(itemManager.zoomArea(), 10))
+//            diff.deletes.forEach {
+//                removeFromCluster(clusterManager, it)
+//            }
+            val builder = LatLngBounds.builder()
+            items.forEach {
+                addToCluster(clusterManager, it)
+                builder.include(it.position)
+            }
+
+            if (items.isEmpty()) {
+                builder.include(LatLng(0.0, 0.0))
+            }
+            Log.e("Cluster", "Cluster size: ${clusterManager.markerCollection.markers.size} + ${clusterManager.clusterMarkerCollection.markers.size}")
+
+//            map.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10))
         }
     }
+
+    fun addToCluster(clusterManager: ClusterManager<T>, item: T) {
+        clusterManager.addItem(item)
+    }
+
+    fun removeFromCluster(clusterManager: ClusterManager<T>, item: T) {
+        clusterManager.removeItem(item)
+    }
+
+    fun getMarker(item: T) = renderer.getMarker(item)
+
+    fun getCluster(marker: Marker): Cluster<T>? = renderer.getCluster(marker)
+    fun getClusterItem(marker: Marker):T? = renderer.getClusterItem(marker)
+
+    fun numClusters() = clusterManager.markerCollection.markers.size
 }
 
 data class ClusterItemDiff<out T: ClusterItem>(

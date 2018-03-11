@@ -1,6 +1,7 @@
 package com.github.sidky.photoscout
 
 import android.arch.paging.PagedList
+import com.github.sidky.photoscout.api.flickr.BoundingBox
 import com.github.sidky.photoscout.data.entity.PhotoWithSize
 import com.github.sidky.photoscout.data.repository.FlickrPhotoRepository
 import com.github.sidky.photoscout.data.repository.PagedListObservable
@@ -24,12 +25,13 @@ class PhotoPresenter(val repository: FlickrPhotoRepository) {
                     when (action) {
                         is Action.Search -> prevState.copy(query = action.query)
                         is Action.ClearQuery -> prevState.copy(query = null)
+                        is Action.MoveMap -> prevState.copy(region = action.boundingBox)
                     }
                 })
 
         val actionDisposable = stateObservable
                 .observeOn(Schedulers.io())
-                .flatMap { repository.getPhotos(query = it.query).observable() }
+                .flatMap { repository.getPhotos(query = it.query, boundingBox = it.region).observable() }
                 .observeOn(Schedulers.io())
                 .map { _photoList.onNext(it) }
                 .subscribe()
@@ -57,8 +59,9 @@ class PhotoPresenter(val repository: FlickrPhotoRepository) {
 
     fun search(query: String) = actions.onNext(Action.Search(query))
     fun clearSearch() = actions.onNext(Action.ClearQuery())
+    fun moveMap(boundingBox: BoundingBox) = actions.onNext(Action.MoveMap(boundingBox))
 
-    data class ScreenState(val query: String?) {
+    data class ScreenState(val query: String?, val region: BoundingBox? = null) {
         companion object {
             val INIT = ScreenState(query = null)
         }
@@ -67,6 +70,7 @@ class PhotoPresenter(val repository: FlickrPhotoRepository) {
     sealed class Action {
         class Search(val query: String) : Action()
         class ClearQuery(): Action()
+        class MoveMap(val boundingBox: BoundingBox): Action()
     }
 
     fun clear() {
