@@ -1,0 +1,23 @@
+query InterestingQuery($page: Int) {
+    interesting(page: $page) {
+        photos {
+            id
+            ownerName
+            location {
+                latitude
+                longitude
+                accuracy
+            }
+            photoUrls {
+                size
+                url
+                width
+                height
+            }
+        }
+        pagination {
+            hasNext
+            next
+        }
+    }
+}

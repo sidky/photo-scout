@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.apollographql.android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
+
+android {
+    compileSdkVersion versions.compileSdk
+    defaultConfig {
+        applicationId "com.github.sidky.photoscout"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation project(':data')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation deps.kotlin.stdlib
+    implementation deps.androidx.appCompat
+    implementation deps.androidx.core
+    implementation deps.androidx.fragment
+    implementation deps.graphql.runtime
+    testImplementation deps.testing.junit
+
+    implementation deps.androidx.recyclerview
+
+    implementation deps.koin
+    implementation deps.kotlin.coroutine
+
+    implementation (deps.glide.glide) {
+        exclude group: "com.android.support"
+    }
+    kapt deps.androidx.annotation
+    implementation (deps.glide.recyclerview) {
+        transitive = false
+    }
+    implementation deps.glide.okhttp
+    kapt deps.glide.compiler
+
+    implementation deps.androidx.paging
+    implementation deps.androidx.lifecycle
+    implementation deps.androidx.ktx
+
+    implementation deps.timber
+
+    implementation deps.stetho.core
+    implementation deps.stetho.okhttp3
+
+    implementation deps.navigation.runtime
+    implementation deps.navigation.runtimeKtx
+    implementation deps.navigation.fragment
+    implementation deps.navigation.fragmentKtx
+
+
+}

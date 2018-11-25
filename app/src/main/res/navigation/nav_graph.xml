@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/nav_graph" app:startDestination="@id/photoListFragment">
+
+    <fragment android:id="@+id/photoListFragment" android:name="com.github.sidky.photoscout.PhotoListFragment"
+              android:label="PhotoListFragment">
+        <action android:id="@+id/open_detail"
+                app:destination="@id/photoDetailFragment"/>
+    </fragment>
+    <fragment android:id="@+id/photoDetailFragment" android:name="com.github.sidky.photoscout.PhotoDetailFragment"
+              android:label="PhotoDetailFragment">
+        <argument
+            android:name="photoId"
+            app:argType="string"/>
+        <argument android:name="transitionName" app:argType="string"/>
+        <argument
+            android:name="url"
+            app:argType="string"/>
+    </fragment>
+</navigation>
