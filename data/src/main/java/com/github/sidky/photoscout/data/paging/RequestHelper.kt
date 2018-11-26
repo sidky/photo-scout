@@ -6,6 +6,9 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.github.sidky.photoscout.data.model.*
 import com.github.sidky.photoscout.graphql.InterestingQuery
+import com.github.sidky.photoscout.graphql.SearchQuery
+import com.github.sidky.photoscout.graphql.fragment.PaginationProp
+import com.github.sidky.photoscout.graphql.fragment.PhotoProp
 import com.github.sidky.photoscout.graphql.type.PhotoSize as GraphQLPhotoSize
 
 interface RequestCallback {
@@ -41,13 +44,13 @@ abstract class RequestHelper<T> {
     }
 }
 
-class InterestingRequestHelper() : RequestHelper<InterestingQuery.Data>() {
-    override fun convert(data: InterestingQuery.Data?): PhotoResponse {
-        val pagination = data?.interesting()?.pagination()?.let {
+abstract class BasePhotoListHelper<T> : RequestHelper<T>() {
+    override fun convert(data: T?): PhotoResponse {
+        val pagination = getPagination(data)?.let {
             Pagination(it.hasNext(), it.next())
         } ?: Pagination(false, null)
 
-        val photos = data?.interesting()?.photos()?.map {
+        val photos = getPhotoList(data)?.map {
             val urls = it.photoUrls()?.map {
                 PhotoURL(ApolloRequestHelper.size(it.size()), it.url(), it.width(), it.height())
             } ?: emptyList()
@@ -55,9 +58,24 @@ class InterestingRequestHelper() : RequestHelper<InterestingQuery.Data>() {
                 Location(it.latitude(), it.longitude(), it.accuracy())
             }
             Photo(it.id(), it.ownerName(), location, urls)
-        } ?: emptyList()
+        }
 
         return PhotoResponse(photos, pagination)
+    }
+
+    abstract fun getPagination(data: T?): PaginationProp?
+    abstract fun getPhotoList(data: T?): List<PhotoProp>
+}
+
+class InterestingRequestHelper() : BasePhotoListHelper<InterestingQuery.Data>() {
+    override fun getPagination(data: InterestingQuery.Data?): PaginationProp? {
+        return data?.interesting()?.pagination()?.fragments()?.paginationProp()
+    }
+
+    override fun getPhotoList(data: InterestingQuery.Data?): List<PhotoProp> {
+        return data?.interesting()?.photos()?.map {
+            it.fragments()?.photoProp()
+        } ?: emptyList()
     }
 
     override fun initialRequest(client: ApolloClient): ApolloCall<InterestingQuery.Data> {
@@ -69,6 +87,29 @@ class InterestingRequestHelper() : RequestHelper<InterestingQuery.Data>() {
         val query = InterestingQuery.builder().page(page).build()
         return client.query(query)
     }
+}
+
+class SearchRequestHelper(private val query: String) : BasePhotoListHelper<SearchQuery.Data>() {
+    override fun initialRequest(client: ApolloClient): ApolloCall<SearchQuery.Data> {
+        val query = SearchQuery.builder().query(query).build()
+        return client.query(query)
+    }
+
+    override fun request(client: ApolloClient, page: Int): ApolloCall<SearchQuery.Data> {
+        val query = SearchQuery.builder().query(query).page(page).build()
+        return client.query(query)
+    }
+
+    override fun getPagination(data: SearchQuery.Data?): PaginationProp? {
+        return data?.search()?.pagination()?.fragments()?.paginationProp()
+    }
+
+    override fun getPhotoList(data: SearchQuery.Data?): List<PhotoProp> {
+        return data?.search()?.photos()?.map {
+            it?.fragments()?.photoProp()
+        }?.filterNotNull() ?: emptyList()
+    }
+
 }
 
 data class BoundingBox(val minLongitude: Double, val minLatitude: Double, val maxLongitude: Double, val maxLatitude: Double)

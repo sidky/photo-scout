@@ -27,6 +27,13 @@ class PhotoViewModel(private val repository: PhotoRepository) : ViewModel() {
     }
 
     fun search(query: String?) {
+        if (query != null) {
+            val listing = repository.search(query)
+
+            actionLiveData.addSource(listing.pagedList, {
+                photoLiveData.postValue(it)
+            })
+        }
     }
 
     fun attach(owner: LifecycleOwner) {

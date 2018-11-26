@@ -14,6 +14,7 @@ import com.github.sidky.photoscout.data.model.Location
 import com.github.sidky.photoscout.data.model.PhotoDetail
 import com.github.sidky.photoscout.data.paging.InterestingRequestHelper
 import com.github.sidky.photoscout.data.paging.PhotoBoundaryCallback
+import com.github.sidky.photoscout.data.paging.SearchRequestHelper
 import com.github.sidky.photoscout.graphql.PhotoDetailQuery
 import timber.log.Timber
 
@@ -50,9 +51,10 @@ class PhotoRepository(private val apolloClient: ApolloClient, private val dao: P
         return Listing(toLiveData(dao.photos(), boundaryCallback))
     }
 
-//    fun search(query: String): Listing {
-//        val boundaryCallback = PhotoBoundaryCallback<PhotoWithURL>(apolloClient, dao, InterestingRequestHelper())
-//    }
+    fun search(query: String): Listing {
+        val boundaryCallback = PhotoBoundaryCallback<PhotoWithURL>(apolloClient, dao, SearchRequestHelper(query))
+        return Listing(toLiveData(dao.photos(), boundaryCallback))
+    }
 
     fun getDetails(photoId: String): LiveData<PhotoDetail?> {
         val query = PhotoDetailQuery.builder().photoId(photoId).build()
