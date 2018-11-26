@@ -17,3 +17,16 @@ enum class PhotoSize {
 }
 
 data class Pagination(val hasNext: Boolean, val next: Int?)
+
+data class Exif(val label: String, val value: String)
+
+data class PhotoDetail(
+    val photoId: String,
+    val ownerName: String,
+    val ownerLocation: String?,
+    val title: String,
+    val description: String,
+    val camera: String?,
+    val tags: List<String>,
+    val exif: List<Exif>,
+    val location: Location?)

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a4f9957bf9ff32caa45fef97ca099c45",
+    "identityHash": "ab603aa4c1aee7dff6280f2369b1618a",
     "entities": [
       {
         "tableName": "photo",
@@ -104,7 +104,16 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_photo_url_photo_id",
+            "unique": false,
+            "columnNames": [
+              "photo_id"
+            ],
+            "createSql": "CREATE  INDEX `index_photo_url_photo_id` ON `${TABLE_NAME}` (`photo_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "photo",
@@ -123,7 +132,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a4f9957bf9ff32caa45fef97ca099c45\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ab603aa4c1aee7dff6280f2369b1618a\")"
     ]
   }
 }

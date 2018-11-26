@@ -7,7 +7,7 @@ import com.github.sidky.photoscout.data.PhotoWithURL
 import com.github.sidky.photoscout.data.model.Photo
 import timber.log.Timber
 
-class PhotoPresenter(private val repository: PhotoRepository) : ViewModel() {
+class PhotoViewModel(private val repository: PhotoRepository) : ViewModel() {
 
     private val actionLiveData = MediatorLiveData<Unit>()
 
@@ -24,6 +24,9 @@ class PhotoPresenter(private val repository: PhotoRepository) : ViewModel() {
             Timber.e("Loaded")
             photoLiveData.value = it
         })
+    }
+
+    fun search(query: String?) {
     }
 
     fun attach(owner: LifecycleOwner) {

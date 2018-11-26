@@ -16,13 +16,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.sidky.photoscout.data.PhotoWithURL
 import com.github.sidky.photoscout.databinding.ListFragmentBinding
+import com.github.sidky.photoscout.viewmodel.ActionBarViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PhotoListFragment : Fragment() {
 
     lateinit var binding: ListFragmentBinding
 
-    val presenter: PhotoPresenter by inject()
+    val viewModel: PhotoViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, false)
@@ -44,11 +47,17 @@ class PhotoListFragment : Fragment() {
         rv.layoutManager = m
 //        rv.itemAnimator = null
 
-        presenter.setMaxDimension(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100.0f, resources.displayMetrics).toInt())
+        viewModel.setMaxDimension(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100.0f, resources.displayMetrics).toInt())
 
-        presenter.photoLiveData.observe(this, Observer<PagedList<PhotoWithURL>> {
+        viewModel.photoLiveData.observe(this, Observer<PagedList<PhotoWithURL>> {
             adapter.submitList(it)
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        getSharedViewModel<ActionBarViewModel>().showActionBar(true)
     }
 
     private fun onPhotoClick(source: View, photo: PhotoWithURL?) {

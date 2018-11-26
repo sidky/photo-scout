@@ -19,7 +19,8 @@ data class Photo(
         childColumns = arrayOf("photo_id"),
         onDelete = ForeignKey.CASCADE
     )),
-    tableName = "photo_url"
+    tableName = "photo_url",
+    indices = [Index(value = ["photo_id"])]
 )
 data class SizedURL(
     @PrimaryKey(autoGenerate = true) var id: Long? = null,
@@ -40,10 +41,10 @@ data class PhotoWithURL(
 @Dao
 interface PhotoDAO {
 
-    @Query("SELECT * FROM photo")
+    @Transaction @Query("SELECT * FROM photo")
     fun photos(): DataSource.Factory<Int, PhotoWithURL>
 
-    @Query("SELECT * FROM photo")
+    @Transaction @Query("SELECT * FROM photo")
     fun photosList(): List<PhotoWithURL>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -87,7 +88,7 @@ interface PhotoDAO {
     }
 }
 
-@Database(entities = arrayOf(Photo::class, SizedURL::class), version = 1)
+@Database(entities = arrayOf(Photo::class, SizedURL::class), version = 2)
 abstract class PhotoDatabase : RoomDatabase() {
     abstract fun dao(): PhotoDAO
 }

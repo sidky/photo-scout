@@ -18,6 +18,11 @@ query PhotoDetail($photoId: String) {
             label
             raw
         }
+        location {
+            latitude
+            longitude
+            accuracy
+        }
     }
 
 }

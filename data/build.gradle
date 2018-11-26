@@ -69,7 +69,7 @@ dependencies {
 
     implementation deps.kotlin.stdlib
     implementation deps.kotlin.coroutine
-    implementation deps.koin
+    implementation deps.koin.core
 
     implementation deps.okhttp.okhttp
     implementation deps.okhttp.logging

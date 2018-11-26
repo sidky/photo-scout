@@ -56,7 +56,10 @@ graphql.plugin = "com.apollographql.apollo:apollo-gradle-plugin:${versions.graph
 graphql.runtime = "com.apollographql.apollo:apollo-runtime:${versions.graphql}"
 deps.graphql = graphql
 
-deps.koin = "org.koin:koin-android:${versions.koin}"
+def koin = [:]
+koin.core = "org.koin:koin-android:${versions.koin}"
+koin.viewmodel = "org.koin:koin-androidx-viewmodel:${versions.koin}"
+deps.koin = koin
 
 def kotlin = [:]
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"

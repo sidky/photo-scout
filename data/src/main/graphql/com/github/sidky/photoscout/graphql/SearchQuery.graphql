@@ -1,0 +1,10 @@
+query SearchQuery($query: String, $page: Int) {
+    search(query: $query, page: $page) {
+        photos {
+            ...PhotoProp
+        }
+        pagination {
+            ...PaginationProp
+        }
+    }
+}
