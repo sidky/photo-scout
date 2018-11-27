@@ -31,6 +31,7 @@ versions.test = '1.1.0'
 versions.testCore = '1.0.0'
 versions.espresso = '3.1.0'
 versions.navigation = '1.0.0-alpha07'
+versions.googlePlay = '16.0.0'
 
 def deps = [:]
 
@@ -109,6 +110,10 @@ navigation.fragmentKtx = "android.arch.navigation:navigation-fragment-ktx:$versi
 navigation.safeArgsPlugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 navigation.testing = "android.arch.navigation:navigation-testing:$versions.navigation"
 deps.navigation = navigation
+
+def play = [:]
+play.maps = "com.google.android.gms:play-services-maps:${versions.googlePlay}"
+deps.play = play
 
 ext.deps = deps
 ext.versions = versions

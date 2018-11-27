@@ -5,6 +5,10 @@ apply plugin: 'com.apollographql.android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
 
+def secretPropertiesFile = rootProject.file("secret.properties")
+def secretProperties = new Properties()
+secretProperties.load(new FileInputStream(secretPropertiesFile))
+
 android {
     compileSdkVersion versions.compileSdk
     defaultConfig {
@@ -14,6 +18,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                googleMapsApiKey: secretProperties.getProperty("googleMapsApiKey")
+        ]
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -69,5 +77,6 @@ dependencies {
     implementation deps.navigation.fragment
     implementation deps.navigation.fragmentKtx
 
+    implementation deps.play.maps
 
 }
