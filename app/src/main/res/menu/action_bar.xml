@@ -12,4 +12,9 @@
           android:icon="@drawable/ic_map_white"
           app:showAsAction="always"/>
 
+    <item android:id="@+id/open_list"
+          android:title="List"
+          android:icon="@drawable/ic_list_white"
+          app:showAsAction="always"/>
+
 </menu>

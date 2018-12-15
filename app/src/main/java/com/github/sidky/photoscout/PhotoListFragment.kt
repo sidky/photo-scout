@@ -17,7 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.sidky.photoscout.data.PhotoWithURL
 import com.github.sidky.photoscout.databinding.ListFragmentBinding
 import com.github.sidky.photoscout.viewmodel.ActionBarViewModel
-import org.koin.android.ext.android.inject
+import com.github.sidky.photoscout.viewmodel.PhotoViewModel
+import com.github.sidky.photoscout.viewmodel.VisibleScreen
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -57,7 +58,7 @@ class PhotoListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        getSharedViewModel<ActionBarViewModel>().showActionBar(true)
+        getSharedViewModel<ActionBarViewModel>().setActionBarScreen(VisibleScreen.LIST)
     }
 
     private fun onPhotoClick(source: View, photo: PhotoWithURL?) {

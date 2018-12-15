@@ -2,6 +2,7 @@ package com.github.sidky.photoscout
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
@@ -11,6 +12,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.github.sidky.photoscout.databinding.PhotoActivityBinding
 import com.github.sidky.photoscout.viewmodel.ActionBarState
 import com.github.sidky.photoscout.viewmodel.ActionBarViewModel
+import com.github.sidky.photoscout.viewmodel.PhotoViewModel
+import com.github.sidky.photoscout.viewmodel.VisibleScreen
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -23,6 +26,8 @@ class PhotoActivity : AppCompatActivity() {
     val viewModel: PhotoViewModel by viewModel()
 
     lateinit var binding: PhotoActivityBinding
+
+    var currentScreen: VisibleScreen = VisibleScreen.LIST
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +48,18 @@ class PhotoActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         actionBarState.state.observe(this, Observer<ActionBarState> {
-            if (it.isVisible) {
-                supportActionBar?.show()
-            } else {
-                supportActionBar?.hide()
+            currentScreen = it.screen
+            when (it.screen) {
+                VisibleScreen.LIST -> {
+                    supportActionBar?.show()
+                    invalidateOptionsMenu()
+                }
+                VisibleScreen.MAP-> {
+                    supportActionBar?.show()
+                    invalidateOptionsMenu()
+                }
+                VisibleScreen.DETAIl ->
+                    supportActionBar?.hide()
             }
         })
 
@@ -71,7 +84,34 @@ class PhotoActivity : AppCompatActivity() {
                 })
             }
         }
+
+        if (currentScreen == VisibleScreen.LIST) {
+            menu?.findItem(R.id.open_list)?.isVisible = false
+            menu?.findItem(R.id.open_map)?.isVisible = true
+        } else if (currentScreen == VisibleScreen.MAP) {
+            menu?.findItem(R.id.open_list)?.isVisible = true
+            menu?.findItem(R.id.open_map)?.isVisible = false
+        }
+
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.open_map -> {
+                val action = PhotoListFragmentDirections.openMap()
+                findNavController(findViewById(R.id.fragment)).navigate(action)
+                true
+            }
+            R.id.open_list -> {
+                val action = PhotoMapFragmentDirections.openList()
+                findNavController(findViewById(R.id.fragment)).navigate(action)
+                true
+            }
+            else -> {
+                false
+            }
+        }
     }
 
     fun call() = runBlocking{

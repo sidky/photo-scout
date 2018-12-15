@@ -32,6 +32,7 @@ versions.testCore = '1.0.0'
 versions.espresso = '3.1.0'
 versions.navigation = '1.0.0-alpha07'
 versions.googlePlay = '16.0.0'
+versions.mapsUtil = '0.5'
 
 def deps = [:]
 
@@ -66,6 +67,7 @@ def kotlin = [:]
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
 kotlin.coroutine = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutine}"
+kotlin.androidCoroutine = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutine}"
 kotlin.reflect = "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
 deps.kotlin = kotlin
 
@@ -113,6 +115,7 @@ deps.navigation = navigation
 
 def play = [:]
 play.maps = "com.google.android.gms:play-services-maps:${versions.googlePlay}"
+play.mapsUtils = "com.google.maps.android:android-maps-utils:${versions.mapsUtil}"
 deps.play = play
 
 ext.deps = deps

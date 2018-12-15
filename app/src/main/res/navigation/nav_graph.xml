@@ -7,6 +7,7 @@
               android:label="PhotoListFragment">
         <action android:id="@+id/open_detail"
                 app:destination="@id/photoDetailFragment"/>
+        <action android:id="@+id/open_map" app:destination="@id/photoMapFragment"/>
     </fragment>
     <fragment android:id="@+id/photoDetailFragment" android:name="com.github.sidky.photoscout.PhotoDetailFragment"
               android:label="PhotoDetailFragment">
@@ -17,5 +18,11 @@
         <argument
             android:name="url"
             app:argType="string"/>
+    </fragment>
+    <fragment android:id="@+id/photoMapFragment" android:name="com.github.sidky.photoscout.PhotoMapFragment"
+              android:label="PhotoMapFragment">
+        <action android:id="@+id/open_list" app:destination="@id/photoListFragment"/>
+        <action android:id="@+id/open_detail"
+                app:destination="@id/photoDetailFragment"/>
     </fragment>
 </navigation>

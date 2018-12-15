@@ -1,4 +1,4 @@
-package com.github.sidky.photoscout
+package com.github.sidky.photoscout.viewmodel
 
 import androidx.lifecycle.*
 import androidx.paging.PagedList

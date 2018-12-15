@@ -47,6 +47,9 @@ interface PhotoDAO {
     @Transaction @Query("SELECT * FROM photo")
     fun photosList(): List<PhotoWithURL>
 
+    @Transaction @Query("SELECT * FROM photo")
+    fun photosListLiveData(): LiveData<List<PhotoWithURL>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllPhotos(photos: List<Photo>): List<Long>
 

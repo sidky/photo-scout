@@ -52,6 +52,7 @@ dependencies {
     implementation deps.koin.core
     implementation deps.koin.viewmodel
     implementation deps.kotlin.coroutine
+    implementation deps.kotlin.androidCoroutine
 
     implementation (deps.glide.glide) {
         exclude group: "com.android.support"
@@ -78,5 +79,6 @@ dependencies {
     implementation deps.navigation.fragmentKtx
 
     implementation deps.play.maps
+    implementation deps.play.mapsUtils
 
 }

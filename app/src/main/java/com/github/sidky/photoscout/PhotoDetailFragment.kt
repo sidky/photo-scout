@@ -13,8 +13,8 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.github.sidky.photoscout.databinding.PhotoDetailBinding
 import com.github.sidky.photoscout.viewmodel.ActionBarViewModel
 import com.github.sidky.photoscout.viewmodel.PhotoDetailViewModel
+import com.github.sidky.photoscout.viewmodel.VisibleScreen
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PhotoDetailFragment : Fragment() {
@@ -33,7 +33,7 @@ class PhotoDetailFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        getSharedViewModel<ActionBarViewModel>().showActionBar(false)
+        getSharedViewModel<ActionBarViewModel>().setActionBarScreen(VisibleScreen.DETAIl)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
