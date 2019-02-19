@@ -9,6 +9,7 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.fivehundredpx.greedolayout.GreedoLayoutSizeCalculator
 import com.github.sidky.photoscout.data.Photo
 import com.github.sidky.photoscout.data.PhotoWithURL
 import com.github.sidky.photoscout.databinding.PhotoItemBinding
@@ -17,7 +18,20 @@ import timber.log.Timber
 typealias ClickListener = (View, PhotoWithURL?) -> Unit
 
 class PhotoListAdapter(private val clickListener: ClickListener) :
-    PagedListAdapter<PhotoWithURL, PhotoListAdapter.Companion.PhotoListViewHolder>(diffCallback) {
+    PagedListAdapter<PhotoWithURL, PhotoListAdapter.Companion.PhotoListViewHolder>(diffCallback), GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
+    override fun aspectRatioForIndex(index: Int): Double {
+
+        if (itemCount > index) {
+            val item = getItem(index)?.urls?.get(4)
+
+            return item?.let {
+                it.width.toDouble() / it.height.toDouble()
+            } ?: 1.0
+        } else {
+            return 1.0
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoListViewHolder {
         val binding = DataBindingUtil.inflate<PhotoItemBinding>(LayoutInflater.from(parent.context), R.layout.photo_item, parent,false)
         val vh = PhotoListViewHolder(binding)

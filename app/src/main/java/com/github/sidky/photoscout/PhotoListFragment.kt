@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.fivehundredpx.greedolayout.GreedoLayoutManager
 import com.github.sidky.photoscout.data.PhotoWithURL
 import com.github.sidky.photoscout.databinding.ListFragmentBinding
 import com.github.sidky.photoscout.viewmodel.ActionBarViewModel
@@ -40,13 +41,15 @@ class PhotoListFragment : Fragment() {
         val rv = binding.photoList
         rv.adapter = adapter
 //        var m = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        var m = GridLayoutManager(context, 3, RecyclerView.VERTICAL, false)
+        val m = GreedoLayoutManager(adapter)
 //        m.flexWrap = FlexWrap.WRAP
 //        m.flexDirection = FlexDirection.ROW
 //        m.justifyContent = JustifyContent.SPACE_BETWEEN
 //        m.alignItems = AlignItems.STRETCH
         rv.layoutManager = m
 //        rv.itemAnimator = null
+
+        m.setMaxRowHeight(400)
 
         viewModel.setMaxDimension(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100.0f, resources.displayMetrics).toInt())
 

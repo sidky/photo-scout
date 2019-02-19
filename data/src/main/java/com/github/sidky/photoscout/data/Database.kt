@@ -53,7 +53,7 @@ interface PhotoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllPhotos(photos: List<Photo>): List<Long>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Transaction @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllURLs(urls: List<SizedURL>)
 
     @Query("DELETE FROM photo")

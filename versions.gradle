@@ -15,6 +15,7 @@ versions.flexbox = '1.1.0'
 versions.fragment = '1.0.0'
 versions.glide = '4.8.0'
 versions.graphql = '1.0.0-alpha3'
+versions.greedo = '1.3.0'
 versions.junit = '4.12'
 versions.koin = '1.0.2'
 versions.kotlin = '1.3.10'
@@ -117,6 +118,10 @@ def play = [:]
 play.maps = "com.google.android.gms:play-services-maps:${versions.googlePlay}"
 play.mapsUtils = "com.google.maps.android:android-maps-utils:${versions.mapsUtil}"
 deps.play = play
+
+def greedo = [:]
+greedo.layout = "com.fivehundredpx:greedo-layout:${versions.greedo}"
+deps.greedo = greedo
 
 ext.deps = deps
 ext.versions = versions
