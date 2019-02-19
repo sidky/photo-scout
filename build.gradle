@@ -8,7 +8,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:3.3.1'
         classpath deps.kotlin.plugin
         classpath deps.graphql.plugin
         classpath "de.mannodermaus.gradle.plugins:android-junit5:1.3.1.1"
