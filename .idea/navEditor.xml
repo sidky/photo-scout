@@ -8,13 +8,13 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="photoDetailFragment">
+                  <entry key="photoDisplayFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="398" />
-                            <option name="y" value="39" />
+                            <option name="x" value="596" />
+                            <option name="y" value="56" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -25,44 +25,13 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-137" />
-                            <option name="y" value="-168" />
+                            <option name="x" value="110" />
+                            <option name="y" value="111" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="open_detail">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="open_map">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="photoMapFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="56" />
-                            <option name="y" value="326" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="open_detail">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="open_list">
+                            <entry key="action_photoListFragment_to_photoDisplayFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

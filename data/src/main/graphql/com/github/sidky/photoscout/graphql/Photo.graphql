@@ -1,0 +1,15 @@
+fragment ClientPhoto on Photo {
+    id
+    ownerName
+    location {
+      latitude
+      longitude
+      accuracy
+    }
+    photoUrls {
+      size
+      url
+      width
+      height
+    }
+}

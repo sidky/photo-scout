@@ -1,35 +1,29 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.apollographql.android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
-
-def secretPropertiesFile = rootProject.file("secret.properties")
-def secretProperties = new Properties()
-secretProperties.load(new FileInputStream(secretPropertiesFile))
+apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
-    compileSdkVersion versions.compileSdk
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.github.sidky.photoscout"
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
+        minSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        manifestPlaceholders = [
-                googleMapsApiKey: secretProperties.getProperty("googleMapsApiKey")
-        ]
-
-        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     dataBinding {
@@ -38,48 +32,48 @@ android {
 }
 
 dependencies {
+    implementation project(':common')
     implementation project(':data')
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation deps.kotlin.stdlib
-    implementation deps.androidx.appCompat
-    implementation deps.androidx.core
-    implementation deps.androidx.fragment
-    implementation deps.graphql.runtime
-    testImplementation deps.testing.junit
-
-    implementation deps.androidx.recyclerview
-
-    implementation deps.koin.core
-    implementation deps.koin.viewmodel
     implementation deps.kotlin.coroutine
-    implementation deps.kotlin.androidCoroutine
+    implementation deps.kotlin.coroutineAndroid
 
-    implementation (deps.glide.glide) {
-        exclude group: "com.android.support"
-    }
-    kapt deps.androidx.annotation
-    implementation (deps.glide.recyclerview) {
-        transitive = false
-    }
-    implementation deps.glide.okhttp
-    kapt deps.glide.compiler
-
-    implementation deps.androidx.paging
-    implementation deps.androidx.lifecycle
+    implementation deps.androidx.appcompat
     implementation deps.androidx.ktx
+    implementation deps.androidx.recyclerView
+    testImplementation 'junit:junit:4.12'
 
-    implementation deps.timber
+    implementation deps.graphql.runtime
 
-    implementation deps.stetho.core
+    implementation deps.koin.koin
+    implementation deps.koin.viewmodel
+
+    implementation deps.timber.timber
+
+    implementation deps.stetho.stetho
     implementation deps.stetho.okhttp3
 
-    implementation deps.navigation.runtime
-    implementation deps.navigation.runtimeKtx
+    implementation deps.room.runtime
+
+    implementation deps.workmanager.runtime
+    implementation deps.workmanager.ktx
+
+    implementation deps.paging.common
+    implementation deps.paging.runtime
+
+    implementation deps.lifecycle.runtime
+    implementation deps.lifecycle.viewmodel
+
+    implementation deps.glide.glide
+
+    implementation deps.paging.common
+    implementation deps.paging.runtime
+
+    implementation deps.fivehundredpx.greedo
+
     implementation deps.navigation.fragment
     implementation deps.navigation.fragmentKtx
-
-    implementation deps.play.maps
-    implementation deps.play.mapsUtils
-
-    implementation deps.greedo.layout
 }

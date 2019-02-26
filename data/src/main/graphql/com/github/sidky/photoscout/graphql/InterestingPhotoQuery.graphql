@@ -1,0 +1,14 @@
+#import './Photo.graphql'
+#import './Pagination.graphql'
+
+query InterestingPhotoQuery($page: Int!) {
+    interesting(page: $page) {
+        photos {
+            ...ClientPhoto
+        }
+        pagination {
+            ...NextPage
+        }
+    }
+
+}

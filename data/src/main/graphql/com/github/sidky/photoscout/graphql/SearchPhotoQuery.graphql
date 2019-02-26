@@ -1,0 +1,14 @@
+#import './Photo.graphql'
+#import './Pagination.graphql'
+
+query SearchPhotoQuery($query: String!, $page: Int!) {
+    search(query: $query, page: $page) {
+        photos {
+            ...ClientPhoto
+        }
+        pagination {
+            ...NextPage
+        }
+    }
+
+}

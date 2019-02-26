@@ -1,76 +1,56 @@
 package com.github.sidky.photoscout
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.fivehundredpx.greedolayout.GreedoLayoutManager
-import com.github.sidky.photoscout.data.PhotoWithURL
-import com.github.sidky.photoscout.databinding.ListFragmentBinding
-import com.github.sidky.photoscout.viewmodel.ActionBarViewModel
-import com.github.sidky.photoscout.viewmodel.PhotoViewModel
-import com.github.sidky.photoscout.viewmodel.VisibleScreen
-import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import com.github.sidky.data.dao.PhotoThumbnail
+import com.github.sidky.photoscout.adapter.PhotoListAdapter
+import com.github.sidky.photoscout.databinding.FragmentPhotoListBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PhotoListFragment : Fragment() {
 
-    lateinit var binding: ListFragmentBinding
+    private lateinit var binding: FragmentPhotoListBinding
 
-    val viewModel: PhotoViewModel by sharedViewModel()
+    private val photoViewModel: PhotoListViewModel by sharedViewModel()
+
+    private lateinit var adapter: PhotoListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_list, container, false)
+
+        val adapter = PhotoListAdapter()
+        this.adapter = adapter
+
+        val rv = binding.photoList
+        rv.adapter = adapter
+
+
+        val lm = GreedoLayoutManager(adapter)
+//        val lm = GridLayoutManager(context, 3, RecyclerView.VERTICAL, false)
+//        lm.setFixedHeight(true)
+//        val lm = LinearLayoutManager(context)
+        rv.layoutManager = lm
+        rv.itemAnimator = null
+
+        photoViewModel.photoLiveData.observe(this,
+            Observer<PagedList<PhotoThumbnail>> { t ->
+                adapter.submitList(t)
+            })
+
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = PhotoListAdapter(this::onPhotoClick)
-        val rv = binding.photoList
-        rv.adapter = adapter
-//        var m = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        val m = GreedoLayoutManager(adapter)
-//        m.flexWrap = FlexWrap.WRAP
-//        m.flexDirection = FlexDirection.ROW
-//        m.justifyContent = JustifyContent.SPACE_BETWEEN
-//        m.alignItems = AlignItems.STRETCH
-        rv.layoutManager = m
-//        rv.itemAnimator = null
-
-        m.setMaxRowHeight(400)
-
-        viewModel.setMaxDimension(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100.0f, resources.displayMetrics).toInt())
-
-        viewModel.photoLiveData.observe(this, Observer<PagedList<PhotoWithURL>> {
-            adapter.submitList(it)
-        })
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        getSharedViewModel<ActionBarViewModel>().setActionBarScreen(VisibleScreen.LIST)
-    }
-
-    private fun onPhotoClick(source: View, photo: PhotoWithURL?) {
-        val largest = photo?.urls?.maxBy { it.width * it.height }
-        largest?.let {
-            val transition = ViewCompat.getTransitionName(source) ?: ""
-            val extras = FragmentNavigatorExtras(source to transition)
-            val action = PhotoListFragmentDirections.OpenDetail(photo.photo.photoId, transition, largest.url)
-            findNavController().navigate(action, extras)
-        }
+        photoViewModel.loadInteresting()
     }
 }

@@ -1,0 +1,5 @@
+fragment NextPage on Pagination {
+	hasNext
+	next
+}
+

@@ -2,7 +2,10 @@ package com.github.sidky.photoscout
 
 import android.app.Application
 import com.facebook.stetho.Stetho
-import com.github.sidky.photoscout.data.dataModule
+import com.github.sidky.common.koin.constantsModule
+import com.github.sidky.data.koin.apolloToDBConverterModule
+import com.github.sidky.data.koin.dataModule
+import com.github.sidky.photoscout.koin.appModule
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
@@ -10,20 +13,17 @@ class PhotoScoutApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        initializeKoin()
+        startKoin(this, listOf(dataModule, constantsModule, apolloToDBConverterModule, appModule))
+
         initializeTimber()
         initializeStetho()
     }
 
-    fun initializeKoin() {
-        startKoin(this, listOf(appModule, dataModule))
-    }
-
-    fun initializeTimber() {
+    private fun initializeTimber() {
         Timber.plant(Timber.DebugTree())
     }
 
-    fun initializeStetho() {
+    private fun initializeStetho() {
         Stetho.initializeWithDefaults(this)
     }
 }

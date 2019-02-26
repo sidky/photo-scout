@@ -1,24 +1,24 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.apollographql.android'
+apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: "de.mannodermaus.android-junit5"
 
 android {
-    compileSdkVersion versions.compileSdk
+    compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
+        minSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
             }
         }
     }
@@ -26,75 +26,53 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
-    sourceSets {
-        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-            jacocoOptions {
-                // here goes all jacoco config, for example
-                html.enabled = true
-                xml.enabled = false
-                csv.enabled = false
-                unitTests.all {
-                    testLogging.events = ["passed", "skipped", "failed"]
-                }
-            }
-        }    }
 }
 
 dependencies {
+    implementation project(':common')
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    testImplementation deps.testing.junit
+    testImplementation 'junit:junit:4.12'
+
     implementation deps.graphql.runtime
 
-    implementation deps.androidx.roomRuntime
-    kapt deps.androidx.roomCompiler
-    testImplementation deps.androidx.roomTesting
+    implementation deps.androidx.ktx
 
     implementation deps.kotlin.stdlib
     implementation deps.kotlin.coroutine
-    implementation deps.koin.core
 
     implementation deps.okhttp.okhttp
     implementation deps.okhttp.logging
 
-    implementation deps.timber
+    implementation deps.koin.koin
+
+    implementation deps.room.runtime
+    kapt deps.room.compiler
+    implementation deps.room.coroutine
+
+    implementation deps.paging.common
+    implementation deps.paging.runtime
+
     implementation deps.stetho.okhttp3
 
-    implementation deps.androidx.paging
-    implementation deps.androidx.lifecycle
+    implementation deps.workmanager.runtime
+    implementation deps.workmanager.ktx
+
     implementation deps.androidx.ktx
 
-    androidTestImplementation deps.androidx.test
-    androidTestImplementation deps.androidx.testCore
-    androidTestImplementation deps.androidx.testRules
-    androidTestImplementation deps.androidx.test
+    implementation deps.timber.timber
 
-    androidTestImplementation deps.espresso.core
-
+    implementation deps.lifecycle.livedata
 }
 repositories {
     mavenCentral()
-}
-
-apollo {
-    customTypeMapping = [
-            "Time": "java.util.Date"
-    ]
 }
