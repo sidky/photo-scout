@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable name="enableSearchHere" type="boolean"/>
+        <variable name="searchAction" type="android.view.View.OnClickListener"/>
+        <import type="android.view.View"/>
+    </data>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+
+        <com.google.android.gms.maps.MapView android:id="@+id/map"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
+
+        </com.google.android.gms.maps.MapView>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_gravity="bottom"
+                android:id="@+id/thumbnail_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/search_here"
+                android:layout_gravity="top|center_horizontal"
+                android:text="Search Here"
+                android:visibility="@{enableSearchHere? View.VISIBLE : View.GONE}"
+                android:textColor="@color/skyBlue"
+                android:drawable="@android:color/white"
+                android:backgroundTint="@android:color/transparent"
+                android:backgroundTintMode="screen"
+                android:background="@drawable/search_here_button_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:minWidth="10dp"
+                android:onClick="@{searchAction}"
+                android:minHeight="10dp"/>
+
+    </FrameLayout>
+</layout>

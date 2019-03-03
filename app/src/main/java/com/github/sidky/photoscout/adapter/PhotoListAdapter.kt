@@ -2,6 +2,7 @@ package com.github.sidky.photoscout.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MediatorLiveData
 import androidx.navigation.Navigation
@@ -16,7 +17,7 @@ import com.github.sidky.photoscout.R
 import com.github.sidky.photoscout.databinding.ItemPhotoBinding
 import timber.log.Timber
 
-class PhotoViewHolder(private val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
+class PhotoViewHolder(private val binding: ItemPhotoBinding, @IdRes private val direction: Int) : RecyclerView.ViewHolder(binding.root) {
 
     fun update(photo: PhotoThumbnail) {
         Timber.i("Photo: ${photo.url}: ${photo.width}x${photo.height}")
@@ -25,14 +26,14 @@ class PhotoViewHolder(private val binding: ItemPhotoBinding) : RecyclerView.View
         val arg = PhotoListFragmentDirections.actionPhotoListFragmentToPhotoDisplayFragment(photo.photoId)
 
         binding.thumbnail.setOnClickListener(Navigation.createNavigateOnClickListener(
-            R.id.action_photoListFragment_to_photoDisplayFragment,
+            direction, //R.id.action_photoListFragment_to_photoDisplayFragment,
             arg.arguments))
 
         binding.executePendingBindings()
     }
 }
 
-class PhotoListAdapter : PagedListAdapter<PhotoThumbnail, PhotoViewHolder>(diffCallback), GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
+class PhotoListAdapter(@IdRes val direction: Int) : PagedListAdapter<PhotoThumbnail, PhotoViewHolder>(diffCallback), GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
 
     private val mediatorClickLiveData = MediatorLiveData<PhotoThumbnail>()
 
@@ -53,7 +54,7 @@ class PhotoListAdapter : PagedListAdapter<PhotoThumbnail, PhotoViewHolder>(diffC
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         val binding: ItemPhotoBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_photo, parent, false)
-        return PhotoViewHolder(binding)
+        return PhotoViewHolder(binding, direction)
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {

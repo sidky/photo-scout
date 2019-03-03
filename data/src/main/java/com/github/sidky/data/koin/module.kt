@@ -3,9 +3,11 @@ package com.github.sidky.data.koin
 import androidx.room.Room
 import com.apollographql.apollo.ApolloClient
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.github.sidky.data.apollo.dateAdapter
 import com.github.sidky.data.dao.LoadingState
 import com.github.sidky.data.dao.PhotoDatabase
 import com.github.sidky.data.repository.PhotoRepository
+import com.github.sidky.photoscout.graphql.type.CustomType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -22,7 +24,11 @@ val dataModule = module {
     }
 
     single(createOnStart = false) {
-        ApolloClient.builder().serverUrl(get<String>("server")).okHttpClient(get()).build()
+        ApolloClient.builder()
+            .serverUrl(get<String>("server"))
+            .okHttpClient(get())
+            .addCustomTypeAdapter(CustomType.TIME, dateAdapter)
+            .build()
     }
 
     single(createOnStart = false) {
@@ -34,7 +40,7 @@ val dataModule = module {
     }
 
     single(createOnStart = false) {
-        PhotoRepository(get(), get())
+        PhotoRepository(get(), get(), get())
     }
 
     single {

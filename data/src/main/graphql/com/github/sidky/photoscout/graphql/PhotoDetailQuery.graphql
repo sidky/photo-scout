@@ -1,0 +1,26 @@
+query PhotoDetailQuery($photoId: String!) {
+    detail(photoId: $photoId){
+        id
+        uploadedAt
+        owner {
+            name
+            location
+        }
+        title
+        description
+        camera
+        tags {
+            raw
+            isMachineTag
+        }
+        exif {
+            label
+            raw
+        }
+        location {
+            latitude
+            longitude
+            accuracy
+        }
+    }
+}

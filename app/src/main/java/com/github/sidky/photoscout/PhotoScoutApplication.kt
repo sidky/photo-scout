@@ -9,7 +9,7 @@ import com.github.sidky.photoscout.koin.appModule
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
-class PhotoScoutApplication : Application() {
+open class PhotoScoutApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 

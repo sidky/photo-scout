@@ -14,6 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class PhotoDisplayFragment : Fragment() {
     lateinit var binding: FragmentPhotoDisplayBinding
@@ -31,6 +32,7 @@ class PhotoDisplayFragment : Fragment() {
         safeArgs = PhotoDisplayFragmentArgs.fromBundle(arguments!!)
 
         GlobalScope.launch(Dispatchers.Main) {
+            Timber.d("ID: ${safeArgs.photoId}")
             val result = async {
                 dao.getPhoto(safeArgs.photoId)
             }.await()

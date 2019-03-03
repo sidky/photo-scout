@@ -36,6 +36,12 @@ android {
     }
 }
 
+apollo {
+    customTypeMapping = [
+            "Time" : "java.util.Date"
+    ]
+}
+
 dependencies {
     implementation project(':common')
 

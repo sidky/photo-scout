@@ -21,7 +21,7 @@ class PhotoListActivity : AppCompatActivity() {
 
     val photoViewModel: PhotoListViewModel by viewModel()
 
-    private val destinationListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
+    private val destinationListener = NavController.OnDestinationChangedListener { _, destination, _ ->
         when (destination.id) {
             R.id.photoDisplayFragment -> supportActionBar?.hide()
             R.id.photoListFragment -> {

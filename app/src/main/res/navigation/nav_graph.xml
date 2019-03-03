@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/nav_graph" app:startDestination="@id/photoListFragment">
+            android:id="@+id/nav_graph" app:startDestination="@id/photoMapFragment">
     <fragment android:id="@+id/photoListFragment" android:name="com.github.sidky.photoscout.PhotoListFragment"
               android:label="PhotoListFragment">
         <action android:id="@+id/action_photoListFragment_to_photoDisplayFragment"
@@ -10,5 +10,10 @@
     <fragment android:id="@+id/photoDisplayFragment" android:name="com.github.sidky.photoscout.PhotoDisplayFragment"
               android:label="PhotoDisplayFragment">
         <argument android:name="photoId" app:argType="long" android:defaultValue="0L"/>
+    </fragment>
+    <fragment android:id="@+id/photoMapFragment" android:name="com.github.sidky.photoscout.PhotoMapFragment"
+              android:label="PhotoMapFragment">
+        <action android:id="@+id/action_display"
+                app:destination="@id/photoDisplayFragment"/>
     </fragment>
 </navigation>

@@ -25,7 +25,7 @@ class PhotoListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_list, container, false)
 
-        val adapter = PhotoListAdapter()
+        val adapter = PhotoListAdapter(R.id.action_photoListFragment_to_photoDisplayFragment)
         this.adapter = adapter
 
         val rv = binding.photoList
@@ -44,13 +44,25 @@ class PhotoListFragment : Fragment() {
                 adapter.submitList(t)
             })
 
-
         return binding.root
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            binding.photoList.layoutManager?.onRestoreInstanceState(savedInstanceState.getParcelable("scroll"))
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val s = binding.photoList.layoutManager?.onSaveInstanceState()
+        outState.putParcelable("scroll", s)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        photoViewModel.loadInteresting()
     }
 }

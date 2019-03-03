@@ -70,9 +70,16 @@ class InterestingPhotoBoundaryCallback(loadingState: LoadingState) : AbstractPho
         buildRequest<InterestingNextPageLoader>("photo:$page", WorkResultUtil.inputPage(page))
 }
 
+class InterestingAtLocationPhotoBoundaryCallback(private val location: BoundingBox, loadingState: LoadingState) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
+    override fun firstPageLoader(): OneTimeWorkRequest = buildRequest<InterestingAtLocationFirstPageLoader>("page:1", InterestingAtLocationArgUtil.toDataBuilder(location).build())
+
+    override fun nextPageLoader(page: Int): OneTimeWorkRequest =
+        buildRequest<InterestingAtLocationNextPageLoader>("photo:$page", InterestingAtLocationArgUtil.toDataBuilder(location).putInt("page", page).build())
+}
+
 class SearchPhotoBoundaryCallback(private val query: String, loadingState: LoadingState) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
     override fun firstPageLoader(): OneTimeWorkRequest =
         buildRequest<SearchFirstPageLoader>("page:1", WorkResultUtil.query(query))
 
-    override fun nextPageLoader(page: Int): OneTimeWorkRequest = buildRequest<InterestingNextPageLoader>("photo:$page", WorkResultUtil.query(query, page))
+    override fun nextPageLoader(page: Int): OneTimeWorkRequest = buildRequest<SearchNextPageLoader>("photo:$page", WorkResultUtil.query(query, page))
 }

@@ -13,6 +13,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                MAPS_API_KEY: GOOGLE_MAPS_API
+        ]
     }
     buildTypes {
         release {
@@ -44,6 +48,7 @@ dependencies {
     implementation deps.androidx.appcompat
     implementation deps.androidx.ktx
     implementation deps.androidx.recyclerView
+    implementation deps.androidx.design
     testImplementation 'junit:junit:4.12'
 
     implementation deps.graphql.runtime
@@ -76,4 +81,10 @@ dependencies {
 
     implementation deps.navigation.fragment
     implementation deps.navigation.fragmentKtx
+
+    debugImplementation deps.facebook.flipper
+    debugImplementation deps.facebook.soloader
+
+    implementation deps.play.maps
+    implementation deps.play.mapsUtils
 }

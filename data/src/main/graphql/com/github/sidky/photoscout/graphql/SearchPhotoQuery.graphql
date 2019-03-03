@@ -1,8 +1,8 @@
 #import './Photo.graphql'
 #import './Pagination.graphql'
 
-query SearchPhotoQuery($query: String!, $page: Int!) {
-    search(query: $query, page: $page) {
+query SearchPhotoQuery($query: String, $box: BoundingBox, $page: Int!) {
+    search(query: $query, bbox: $box, page: $page) {
         photos {
             ...ClientPhoto
         }

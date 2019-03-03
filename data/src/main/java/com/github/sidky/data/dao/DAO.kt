@@ -1,5 +1,6 @@
 package com.github.sidky.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import kotlinx.coroutines.runBlocking
@@ -12,14 +13,45 @@ data class PhotoThumbnail(
     @ColumnInfo(name = "height") val height: Int,
     @ColumnInfo(name = "pixels") val pixels: Int)
 
+data class ThumbnailWithLocation(
+    @ColumnInfo(name = "id") val id: Long,
+    @Embedded val location: Location,
+    @ColumnInfo(name = "url") val url: String,
+    @ColumnInfo(name = "width") val width: Int,
+    @ColumnInfo(name = "height") val height: Int,
+    @ColumnInfo(name = "pixels") val pixels: Int)
+
 @Dao
 interface PhotoDAO {
 
-    @Query("SELECT * FROM photo WHERE id = :id")
+    @Transaction @Query("SELECT * FROM photo WHERE id = :id")
     suspend fun getPhoto(id: Long): PhotoWithURL
 
     @Query("SELECT * FROM photo")
     suspend fun allPhotos(): List<Photo>
+
+    @Transaction
+    @Query("""
+        SELECT id, longitude, latitude, accuracy, url, width, height, min(pixels) AS pixels from (
+            SELECT
+                photo.id AS id,
+                photo.longitude AS longitude,
+                photo.latitude AS latitude,
+                photo.accuracy AS accuracy,
+                photo_url.url AS url,
+                photo_url.width AS width,
+                photo_url.height AS height,
+                (photo_url.width * photo_url.height) AS pixels
+            FROM photo INNER JOIN photo_url ON photo.id == photo_url.photo_id
+            WHERE
+                latitude IS NOT NULL AND
+                longitude IS NOT NULL AND
+                accuracy IS NOT NULL AND
+                width >= :dimension AND
+                height >= :dimension)
+        GROUP BY id
+        """)
+    fun allPhotoWithLocation(dimension: Int): LiveData<List<ThumbnailWithLocation>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPhotos(photos: List<Photo>): List<Long>
