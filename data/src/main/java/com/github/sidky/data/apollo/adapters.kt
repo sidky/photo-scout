@@ -15,7 +15,7 @@ val dateAdapter = object : CustomTypeAdapter<Date> {
 
     override fun decode(value: CustomTypeValue<*>): Date {
         try {
-            return format.parse(value.toString())
+            return format.parse(value.value.toString())
         } catch (e : ParseException) {
             throw RuntimeException(e)
         }

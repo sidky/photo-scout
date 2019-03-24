@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="label" type="String"/>
+        <variable name="value" type="String"/>
+    </data>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView style="@style/infoExifLabel"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:maxWidth="100dp"
+                  android:text="@{label}"
+                  tools:text="Label"/>
+
+        <TextView style="@style/infoExifValue"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@{value}" tools:text="Exif value"/>
+
+    </LinearLayout>
+</layout>

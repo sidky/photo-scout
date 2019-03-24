@@ -40,7 +40,7 @@ val dataModule = module {
     }
 
     single(createOnStart = false) {
-        PhotoRepository(get(), get(), get())
+        PhotoRepository(get(), get(), get(), get())
     }
 
     single {

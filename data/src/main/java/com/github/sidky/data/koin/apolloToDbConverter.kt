@@ -10,4 +10,11 @@ val apolloToDBConverterModule = module {
     single { ApolloPhotoToDBPhotoConverter(get()) }
     single { ApolloPhotoToDBPhotoWithURLConverter(get(), get()) }
     single { ApolloPhotoListToDBConverter(get()) }
+    single { ApolloOwnerToModelConverter() }
+    single { ApolloTagToModelConverter() }
+    single { ApolloListTagToModelConverter(get()) }
+    single { ApolloExifToModelConverter() }
+    single { ApolloLocationToModelConverter() }
+    single { ApolloListExifToModelConverter(get()) }
+    single { ApolloDetailToModelConverter(get(), get(), get(), get()) }
 }

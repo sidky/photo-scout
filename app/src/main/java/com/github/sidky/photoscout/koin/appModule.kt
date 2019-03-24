@@ -2,6 +2,7 @@ package com.github.sidky.photoscout.koin
 
 import com.github.sidky.common.Converter
 import com.github.sidky.data.paging.BoundingBox
+import com.github.sidky.photoscout.PhotoDetailViewModel
 import com.github.sidky.photoscout.PhotoListViewModel
 import com.github.sidky.photoscout.converter.BoundingBoxToLatLngBoundConverter
 import com.github.sidky.photoscout.converter.LatLngBoundToBoundingBoxConverter
@@ -12,6 +13,10 @@ import org.koin.dsl.module.module
 val appModule = module {
     viewModel {
         PhotoListViewModel(get())
+    }
+
+    viewModel {
+        PhotoDetailViewModel(get())
     }
 
     single<Converter<BoundingBox, LatLngBounds>> {

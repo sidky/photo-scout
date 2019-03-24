@@ -10,7 +10,7 @@ buildscript {
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath deps.kotlin.plugin
         classpath deps.graphql.plugin
         classpath deps.navigation.safeArgs

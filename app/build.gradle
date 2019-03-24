@@ -87,4 +87,6 @@ dependencies {
 
     implementation deps.play.maps
     implementation deps.play.mapsUtils
+
+    implementation deps.flexbox.flexbox
 }

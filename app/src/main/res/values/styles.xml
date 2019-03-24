@@ -8,4 +8,37 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="infoItem">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="infoTitle" parent="infoItem">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="infoOwner" parent="infoItem">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="infoDate" parent="infoItem">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="infoTag" parent="infoItem">
+        <item name="android:background">@drawable/capsule</item>
+    </style>
+
+    <style name="infoExifLabel" parent="infoItem">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginRight">2dp</item>
+    </style>
+
+    <style name="infoExifValue" parent="infoItem">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>
