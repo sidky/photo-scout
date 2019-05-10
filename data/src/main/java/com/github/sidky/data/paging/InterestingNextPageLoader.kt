@@ -12,11 +12,15 @@ class InterestingNextPageLoader(
 ): AbstractNextPageLoader(context, params) {
     private val apolloClient: ApolloClient by inject()
 
-    override suspend fun load(page: Int): PhotoLoaderResponse {
+    override suspend fun load(page: Int): GraphQLResponse {
         val resp = apolloClient.query(InterestingPhotoQuery(page)).execute()
-        val photos = resp.data()?.interesting()?.photos()?.map { it.fragments().clientPhoto() }
-        val next = resp.data()?.interesting()?.pagination()?.fragments()?.nextPage()
+        if (resp.hasErrors()) {
+            return GraphQLResponse.Failure()
+        } else {
+            val photos = resp.data()?.interesting()?.photos()?.map { it.fragments().clientPhoto() }
+            val next = resp.data()?.interesting()?.pagination()?.fragments()?.nextPage()
 
-        return PhotoLoaderResponse(photos, next)
+            return GraphQLResponse.Success(PhotoLoaderResponse(photos, next))
+        }
     }
 }

@@ -17,6 +17,8 @@ android {
         manifestPlaceholders = [
                 MAPS_API_KEY: GOOGLE_MAPS_API
         ]
+
+        buildConfigField "String", "AUTH_REQUEST_ID", "\"$GOOGLE_SIGNING_REQUEST_ID\""
     }
     buildTypes {
         release {
@@ -89,4 +91,12 @@ dependencies {
     implementation deps.play.mapsUtils
 
     implementation deps.flexbox.flexbox
+
+    implementation deps.firebase.auth
+    implementation deps.play.auth
+
+    implementation deps.androidx.constraintLayout
+    implementation deps.androidx.constraintLayoutSolver
 }
+
+apply plugin: 'com.google.gms.google-services'

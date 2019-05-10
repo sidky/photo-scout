@@ -3,6 +3,8 @@ package com.github.sidky.data.koin
 import androidx.room.Room
 import com.apollographql.apollo.ApolloClient
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.github.sidky.data.apollo.AuthenticatorInterceptor
+import com.github.sidky.data.apollo.TokenProvider
 import com.github.sidky.data.apollo.dateAdapter
 import com.github.sidky.data.dao.LoadingState
 import com.github.sidky.data.dao.PhotoDatabase
@@ -16,9 +18,12 @@ import org.koin.dsl.module.module
 val dataModule = module {
     single {
         val logging = HttpLoggingInterceptor()
+        val auth = get<AuthenticatorInterceptor>()
+
         logging.level = HttpLoggingInterceptor.Level.BASIC
         OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(auth)
             .addNetworkInterceptor(StethoInterceptor())
             .build()
     }
@@ -45,5 +50,13 @@ val dataModule = module {
 
     single {
         LoadingState(androidContext())
+    }
+
+    single(createOnStart = false) {
+        TokenProvider()
+    }
+
+    single(createOnStart = false) {
+        AuthenticatorInterceptor(get())
     }
 }

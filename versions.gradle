@@ -3,6 +3,8 @@ ext.deps = [:]
 def versions = [:]
 versions.androidx = '1.0.0'
 versions.coroutine = '1.1.1'
+versions.constraintLayout = '1.1.0'
+versions.firebaseAuth = '16.2.0'
 versions.flipper = '0.16.2'
 versions.flexbox = '1.1.0'
 versions.glide = '4.9.0'
@@ -12,6 +14,7 @@ versions.koin = '1.0.2'
 versions.kotlin = '1.3.21'
 versions.lifecycle = '2.0.0-rc01'
 versions.maps = '16.1.0'
+versions.playAuth = '16.0.1'
 versions.mapsUtils = '0.5'
 versions.material = '1.0.0-rc01'
 versions.navigation = '1.0.0-rc01'
@@ -27,6 +30,8 @@ def deps = [:]
 
 def androidx = [:]
 androidx.appcompat = "androidx.appcompat:appcompat:${versions.androidx}"
+androidx.constraintLayout = "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
+androidx.constraintLayoutSolver = "androidx.constraintlayout:constraintlayout-solver:${versions.constraintLayout}"
 androidx.design = "com.google.android.material:material:${versions.material}"
 androidx.ktx = "androidx.core:core-ktx:${versions.androidx}"
 androidx.recyclerView = "androidx.recyclerview:recyclerview:${versions.androidx}"
@@ -36,6 +41,10 @@ def facebook = [:]
 facebook.flipper = "com.facebook.flipper:flipper:${versions.flipper}"
 facebook.soloader = "com.facebook.soloader:soloader:${versions.soloader}"
 deps.facebook = facebook
+
+def firebase = [:]
+firebase.auth = "com.google.firebase:firebase-auth:${versions.firebaseAuth}"
+deps.firebase = firebase
 
 def fivehundredpx = [:]
 fivehundredpx.greedo = "com.fivehundredpx:greedo-layout:${versions.greedo}"
@@ -100,6 +109,7 @@ paging.runtime = "androidx.paging:paging-runtime:${versions.paging}"
 deps.paging = paging
 
 def play = [:]
+play.auth = "com.google.android.gms:play-services-auth:${versions.playAuth}"
 play.maps = "com.google.android.gms:play-services-maps:${versions.maps}"
 play.mapsUtils = "com.google.maps.android:android-maps-utils:${versions.mapsUtils}"
 deps.play = play

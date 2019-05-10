@@ -43,6 +43,10 @@ class PhotoDisplayFragment : Fragment() {
         decoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.spacer)!!)
         binding.info.addItemDecoration(decoration)
 
+        infoAdapter.onBookmarked.observe(this, Observer {
+            Timber.d("Bookmarked!")
+        })
+
         photoDetailViewModel.detail.observe(this, Observer {
             GlobalScope.launch(Dispatchers.Default) {
                 infoAdapter.update(it)

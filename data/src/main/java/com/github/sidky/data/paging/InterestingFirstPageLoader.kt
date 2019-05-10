@@ -12,11 +12,14 @@ class InterestingFirstPageLoader(
 
     private val apolloClient: ApolloClient by inject()
 
-    override suspend fun load(): PhotoLoaderResponse {
+    override suspend fun load(): GraphQLResponse {
         val response = apolloClient.query(InterestingPhotoQuery(1)).execute()
-        val photos = response.data()?.interesting()?.photos()?.map { it.fragments().clientPhoto() }
-        val next = response.data()?.interesting()?.pagination()?.fragments()?.nextPage()
-
-        return PhotoLoaderResponse(photos, next)
+        return if (response.hasErrors()) {
+            GraphQLResponse.Failure()
+        } else {
+            val photos = response.data()?.interesting()?.photos()?.map { it.fragments().clientPhoto() }
+            val next = response.data()?.interesting()?.pagination()?.fragments()?.nextPage()
+            GraphQLResponse.Success(PhotoLoaderResponse(photos, next))
+        }
     }
 }

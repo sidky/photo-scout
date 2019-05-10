@@ -20,14 +20,18 @@ class SearchFirstPageLoader(
 
     private val apolloClient: ApolloClient by inject()
 
-    override suspend fun load(): PhotoLoaderResponse {
+    override suspend fun load(): GraphQLResponse {
         Timber.d("Data: ${inputData}")
         Timber.d("Query: ${SearchArgUtil.query(inputData)}")
         val response = apolloClient.query(SearchPhotoQuery(Input.fromNullable(SearchArgUtil.query(inputData) ?: ""), Input.absent(), 1)).execute()
-        val photos = response.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
-        val next = response.data()?.search()?.pagination()?.fragments()?.nextPage()
+        return if (response.hasErrors()) {
+            GraphQLResponse.Failure()
+        } else {
+            val photos = response.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
+            val next = response.data()?.search()?.pagination()?.fragments()?.nextPage()
 
-        return PhotoLoaderResponse(photos, next)
+            GraphQLResponse.Success(PhotoLoaderResponse(photos, next))
+        }
     }
 }
 
@@ -37,11 +41,15 @@ class SearchNextPageLoader(
 ): AbstractNextPageLoader(context, params) {
     private val apolloClient: ApolloClient by inject()
 
-    override suspend fun load(page: Int): PhotoLoaderResponse {
+    override suspend fun load(page: Int): GraphQLResponse {
         val resp = apolloClient.query(SearchPhotoQuery(Input.fromNullable(SearchArgUtil.query(inputData) ?: ""), Input.absent(), page)).execute()
-        val photos = resp.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
-        val next = resp.data()?.search()?.pagination()?.fragments()?.nextPage()
+        if (resp.hasErrors()) {
+            return GraphQLResponse.Failure()
+        } else {
+            val photos = resp.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
+            val next = resp.data()?.search()?.pagination()?.fragments()?.nextPage()
 
-        return PhotoLoaderResponse(photos, next)
+            return GraphQLResponse.Success(PhotoLoaderResponse(photos, next))
+        }
     }
 }

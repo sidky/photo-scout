@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.sidky.data.repository.PhotoDetail
@@ -39,10 +40,16 @@ sealed class InfoItem(val itemType: InfoItemType) {
 }
 
 sealed class InfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    class TitleViewHolder(private val binding: ItemTitleBinding) : InfoViewHolder(binding.root) {
+    class TitleViewHolder(private val binding: ItemTitleBinding, private val onClick: () -> Unit) : InfoViewHolder(binding.root) {
+
         override fun apply(item: InfoItem) {
             when (item) {
-                is InfoItem.Title -> binding.text = item.title
+                is InfoItem.Title -> {
+                    binding.text = item.title
+                    binding.handler = View.OnClickListener {
+                        onClick()
+                    }
+                }
             }
         }
     }
@@ -136,13 +143,17 @@ sealed class InfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 class InfoAdapter : RecyclerView.Adapter<InfoViewHolder>() {
 
+    val onBookmarked = MutableLiveData<Boolean>()
+
     private var infoItems: List<InfoItem> = emptyList()
 
     override fun getItemViewType(position: Int): Int = infoItems[position].itemType.ordinal
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoViewHolder {
         return when(InfoItemType.values()[viewType]) {
-            InfoItemType.TITLE -> InfoViewHolder.TitleViewHolder(parent.inflate(R.layout.item_title))
+            InfoItemType.TITLE -> InfoViewHolder.TitleViewHolder(parent.inflate(R.layout.item_title)) {
+                onBookmarked.postValue(true)
+            }
             InfoItemType.OWNER -> InfoViewHolder.OwnerViewHolder(parent.inflate(R.layout.item_owner))
             InfoItemType.UPDATED_AT -> InfoViewHolder.UpdatedAtViewHolder(parent.inflate(R.layout.item_updated_at))
             InfoItemType.DESCRIPTION -> InfoViewHolder.DescriptionViewHolder(parent.inflate(R.layout.item_description))

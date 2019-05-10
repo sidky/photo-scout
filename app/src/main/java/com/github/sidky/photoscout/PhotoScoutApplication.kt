@@ -6,6 +6,7 @@ import com.github.sidky.common.koin.constantsModule
 import com.github.sidky.data.koin.apolloToDBConverterModule
 import com.github.sidky.data.koin.dataModule
 import com.github.sidky.photoscout.koin.appModule
+import com.google.firebase.FirebaseApp
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
@@ -14,6 +15,8 @@ open class PhotoScoutApplication : Application() {
         super.onCreate()
 
         startKoin(this, listOf(dataModule, constantsModule, apolloToDBConverterModule, appModule))
+
+        FirebaseApp.initializeApp(this)
 
         initializeTimber()
         initializeStetho()

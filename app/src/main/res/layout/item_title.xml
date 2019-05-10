@@ -2,8 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable name="text" type="String"/>
+        <variable name="bookmarked" type="boolean"/>
+        <variable name="handler" type="android.view.View.OnClickListener"/>
     </data>
 
-    <TextView style="@style/infoTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@{text}"/>
-
+    <TextView style="@style/infoTitle"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{text}"
+              android:drawableStart="@{bookmarked ? @drawable/ic_bookmarked : @drawable/ic_unbookmarked}"
+              android:onClick="@{handler::onClick}"/>
 </layout>

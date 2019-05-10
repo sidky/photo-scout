@@ -84,15 +84,19 @@ class InterestingAtLocationFirstPageLoader(context: Context, params: WorkerParam
 
     private val apolloClient: ApolloClient by inject()
 
-    override suspend fun load(): PhotoLoaderResponse {
+    override suspend fun load(): GraphQLResponse {
         val data = InterestingAtLocationArgUtil.fromData(inputData)
         Timber.d("Data: ${inputData}")
         Timber.d("Query: ${data}")
         val response = apolloClient.query(SearchPhotoQuery(Input.absent(), Input.fromNullable(data.toBoundingBox()), 1)).execute()
-        val photos = response.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
-        val next = response.data()?.search()?.pagination()?.fragments()?.nextPage()
+        return if (response.hasErrors()) {
+            GraphQLResponse.Failure()
+        } else {
+            val photos = response.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
+            val next = response.data()?.search()?.pagination()?.fragments()?.nextPage()
 
-        return PhotoLoaderResponse(photos, next)
+            return GraphQLResponse.Success(PhotoLoaderResponse(photos, next))
+        }
     }
 }
 
@@ -102,14 +106,18 @@ class InterestingAtLocationNextPageLoader(
 ): AbstractNextPageLoader(context, params) {
     private val apolloClient: ApolloClient by inject()
 
-    override suspend fun load(page: Int): PhotoLoaderResponse {
+    override suspend fun load(page: Int): GraphQLResponse {
         val data = InterestingAtLocationArgUtil.fromData(inputData)
         Timber.d("Data: ${inputData}")
         Timber.d("Query: ${data}")
         val resp = apolloClient.query(SearchPhotoQuery(Input.absent(), Input.fromNullable(data.toBoundingBox()), page)).execute()
-        val photos = resp.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
-        val next = resp.data()?.search()?.pagination()?.fragments()?.nextPage()
+        return if (resp.hasErrors()) {
+            GraphQLResponse.Failure()
+        } else {
+            val photos = resp.data()?.search()?.photos()?.map { it.fragments().clientPhoto() }
+            val next = resp.data()?.search()?.pagination()?.fragments()?.nextPage()
 
-        return PhotoLoaderResponse(photos, next)
+            return GraphQLResponse.Success(PhotoLoaderResponse(photos, next))
+        }
     }
 }
