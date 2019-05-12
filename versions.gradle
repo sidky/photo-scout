@@ -4,7 +4,8 @@ def versions = [:]
 versions.androidx = '1.0.0'
 versions.coroutine = '1.1.1'
 versions.constraintLayout = '1.1.0'
-versions.firebaseAuth = '16.2.0'
+versions.firebaseAuth = '17.0.0'
+versions.firebaseCore = '16.0.9'
 versions.flipper = '0.16.2'
 versions.flexbox = '1.1.0'
 versions.glide = '4.9.0'
@@ -44,6 +45,7 @@ deps.facebook = facebook
 
 def firebase = [:]
 firebase.auth = "com.google.firebase:firebase-auth:${versions.firebaseAuth}"
+firebase.core = "com.google.firebase:firebase-core:${versions.firebaseCore}"
 deps.firebase = firebase
 
 def fivehundredpx = [:]

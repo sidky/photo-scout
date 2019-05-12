@@ -100,6 +100,8 @@ class LoginActivity : AppCompatActivity() {
             GlobalScope.launch(Dispatchers.Main) {
                 val intent = Intent(this@LoginActivity, PhotoListActivity::class.java)
                 startActivity(intent)
+
+                Timber.d("Token: %s", tokenProvider.token())
             }
         }
     }
