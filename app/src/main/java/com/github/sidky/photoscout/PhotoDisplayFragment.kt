@@ -15,10 +15,7 @@ import com.bumptech.glide.Glide
 import com.github.sidky.data.dao.PhotoDAO
 import com.github.sidky.photoscout.adapter.InfoAdapter
 import com.github.sidky.photoscout.databinding.FragmentPhotoDisplayBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
@@ -44,7 +41,11 @@ class PhotoDisplayFragment : Fragment() {
         binding.info.addItemDecoration(decoration)
 
         infoAdapter.onBookmarked.observe(this, Observer {
-            Timber.d("Bookmarked!")
+            runBlocking {
+                withContext(Dispatchers.Default) {
+                    photoDetailViewModel.bookmark(photoDetailViewModel.photoId, this@PhotoDisplayFragment)
+                }
+            }
         })
 
         photoDetailViewModel.detail.observe(this, Observer {
@@ -65,7 +66,7 @@ class PhotoDisplayFragment : Fragment() {
                 dao.getPhoto(safeArgs.photoId)
             }.await()
 
-            val url = result?.urls?.maxBy { it.width * it.height }?.url
+            val url = result.urls.maxBy { it.width * it.height }?.url
 
             Glide.with(this@PhotoDisplayFragment).load(url!!).into(binding.photoDisplay)
 

@@ -12,4 +12,5 @@ fragment ClientPhoto on Photo {
       width
       height
     }
+    bookmarked
 }

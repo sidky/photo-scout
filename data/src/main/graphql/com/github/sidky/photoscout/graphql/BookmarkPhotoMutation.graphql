@@ -1,0 +1,6 @@
+mutation BookmarkPhoto($photoId: String!) {
+    bookmarkPhoto(photoId: $photoId) {
+        success
+        error
+    }
+}
