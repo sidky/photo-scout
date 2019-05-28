@@ -24,7 +24,7 @@ data class BoundingBox(
         parcel.readDouble(),
         parcel.readDouble())
 
-    fun toBoundingBox(): GraphQLBoundingBox {
+    fun toGraphQLBoundingBox(): GraphQLBoundingBox {
         return GraphQLBoundingBox
             .builder()
             .minLatitude(minLatitude)
@@ -44,6 +44,19 @@ data class BoundingBox(
     override fun describeContents(): Int {
         return 0
     }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is BoundingBox) {
+            withinRange(minLongitude, other.minLongitude) &&
+                    withinRange(minLatitude, other.minLatitude) &&
+                    withinRange(maxLongitude, other.maxLongitude) &&
+                    withinRange(maxLatitude, other.maxLatitude)
+        } else {
+            false
+        }
+    }
+
+    private fun withinRange(p: Double, q: Double) = Math.abs(p - q) < 1e-4
 
     companion object CREATOR : Parcelable.Creator<BoundingBox> {
         override fun createFromParcel(parcel: Parcel): BoundingBox {
@@ -88,7 +101,7 @@ class InterestingAtLocationFirstPageLoader(context: Context, params: WorkerParam
         val data = InterestingAtLocationArgUtil.fromData(inputData)
         Timber.d("Data: ${inputData}")
         Timber.d("Query: ${data}")
-        val response = apolloClient.query(SearchPhotoQuery(Input.absent(), Input.fromNullable(data.toBoundingBox()), 1)).execute()
+        val response = apolloClient.query(SearchPhotoQuery(Input.absent(), Input.fromNullable(data.toGraphQLBoundingBox()), 1)).execute()
         return if (response.hasErrors()) {
             GraphQLResponse.Failure()
         } else {
@@ -110,7 +123,7 @@ class InterestingAtLocationNextPageLoader(
         val data = InterestingAtLocationArgUtil.fromData(inputData)
         Timber.d("Data: ${inputData}")
         Timber.d("Query: ${data}")
-        val resp = apolloClient.query(SearchPhotoQuery(Input.absent(), Input.fromNullable(data.toBoundingBox()), page)).execute()
+        val resp = apolloClient.query(SearchPhotoQuery(Input.absent(), Input.fromNullable(data.toGraphQLBoundingBox()), page)).execute()
         return if (resp.hasErrors()) {
             GraphQLResponse.Failure()
         } else {

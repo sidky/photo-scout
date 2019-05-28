@@ -49,6 +49,7 @@ class PhotoListViewModel(private val repository: PhotoRepository) : ViewModel() 
 
     fun search(query: String) {
         currentQuery = Query.Search(query)
+        loadPhotos()
     }
 
     suspend fun detail(photoId: String): PhotoDetail? {
@@ -68,7 +69,7 @@ class PhotoListViewModel(private val repository: PhotoRepository) : ViewModel() 
                 }
             }
             is Query.Search -> {
-                repository.loadSearch(query.query)
+                repository.loadSearch(query.query, searchArea)
             }
         }
         updateListing(query, listing)

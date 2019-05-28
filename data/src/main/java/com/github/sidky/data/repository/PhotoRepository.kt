@@ -50,7 +50,7 @@ class PhotoRepository(
     }
 
     fun loadInteresting(location: BoundingBox): Listing {
-        Timber.tag("PHOTO").i("loadInterestingAtLocation")
+        Timber.tag("PHOTO").i("loadInterestingAtLocation: $location")
         loadingState.resetToInteresting(location)
 
         WorkManager.getInstance().cancelAllWorkByTag(AbstractPhotoBoundaryCallback.TAG_LOADER)
@@ -62,12 +62,12 @@ class PhotoRepository(
         return Listing(liveData)
     }
 
-    fun loadSearch(query: String): Listing {
+    fun loadSearch(query: String, boundingBox: BoundingBox? = null): Listing {
         loadingState.resetToSearch(query)
 
         WorkManager.getInstance().cancelAllWorkByTag(AbstractPhotoBoundaryCallback.TAG_LOADER)
 
-        val cb = SearchPhotoBoundaryCallback(query, loadingState)
+        val cb = SearchPhotoBoundaryCallback(query, loadingState, boundingBox)
 
         val liveData = LivePagedListBuilder(dao.thumbnails(200), pagedListConfig).setBoundaryCallback(cb).build()
         cb.firstPage()

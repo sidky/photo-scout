@@ -89,8 +89,13 @@ class InterestingPhotoBoundaryCallback(loadingState: LoadingState) : AbstractPho
 }
 
 class InterestingAtLocationPhotoBoundaryCallback(private val location: BoundingBox, loadingState: LoadingState) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
-    override fun isValidState(loadingState: LoadingState): Boolean =
-        loadingState.searchType == SearchType.INTERESTING && loadingState.boundingBox != null
+    override fun isValidState(loadingState: LoadingState): Boolean {
+        Timber.tag("PHOTO").i("type: ${loadingState.searchType}")
+        Timber.tag("PHOTO").i("bounding box: $location")
+        Timber.tag("PHOTO").i("state: ${loadingState.boundingBox}")
+        Timber.tag("PHOTO").i("Bounding boxes are: ${loadingState.boundingBox == location}")
+        return loadingState.searchType == SearchType.INTERESTING && loadingState.boundingBox == location
+    }
 
     override fun firstPageLoader(): OneTimeWorkRequest = buildRequest<InterestingAtLocationFirstPageLoader>("page:1", InterestingAtLocationArgUtil.toDataBuilder(location).build())
 
@@ -98,12 +103,18 @@ class InterestingAtLocationPhotoBoundaryCallback(private val location: BoundingB
         buildRequest<InterestingAtLocationNextPageLoader>("photo:$page", InterestingAtLocationArgUtil.toDataBuilder(location).putInt("page", page).build())
 }
 
-class SearchPhotoBoundaryCallback(private val query: String, loadingState: LoadingState) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
+class SearchPhotoBoundaryCallback(
+    private val query: String,
+    loadingState: LoadingState,
+    private val boundingBox: BoundingBox? = null
+) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
     override fun isValidState(loadingState: LoadingState): Boolean =
         loadingState.searchType == SearchType.SEARCH
 
     override fun firstPageLoader(): OneTimeWorkRequest =
-        buildRequest<SearchFirstPageLoader>("page:1", WorkResultUtil.query(query))
+        buildRequest<SearchFirstPageLoader>("page:1", SearchArgUtil.toData(arg))
 
-    override fun nextPageLoader(page: Int): OneTimeWorkRequest = buildRequest<SearchNextPageLoader>("photo:$page", WorkResultUtil.query(query, page))
+    override fun nextPageLoader(page: Int): OneTimeWorkRequest = buildRequest<SearchNextPageLoader>("photo:$page", SearchArgUtil.toData(arg))
+
+    private val arg = SearchArg(query, boundingBox)
 }
