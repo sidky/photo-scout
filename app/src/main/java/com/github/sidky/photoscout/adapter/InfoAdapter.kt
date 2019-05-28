@@ -30,7 +30,7 @@ enum class InfoItemType {
 }
 
 sealed class InfoItem(val itemType: InfoItemType) {
-    data class Title(val title: String): InfoItem(InfoItemType.TITLE)
+    data class Title(val title: String, val bookmarked: Boolean): InfoItem(InfoItemType.TITLE)
     data class Owner(val name: String): InfoItem(InfoItemType.OWNER)
     data class UpdatedAt(val date: Date): InfoItem(InfoItemType.UPDATED_AT)
     data class Description(val description: String): InfoItem(InfoItemType.DESCRIPTION)
@@ -46,6 +46,7 @@ sealed class InfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             when (item) {
                 is InfoItem.Title -> {
                     binding.text = item.title
+                    binding.bookmarked = item.bookmarked
                     binding.handler = View.OnClickListener {
                         onClick()
                     }
@@ -186,7 +187,7 @@ class InfoAdapter : RecyclerView.Adapter<InfoViewHolder>() {
             emptyList()
         }
         val items = listOf(
-            InfoItem.Title(detail.title),
+            InfoItem.Title(detail.title, detail.bookmarked),
             InfoItem.Owner(detail.owner.name),
             InfoItem.UpdatedAt(detail.uploadedAt),
             InfoItem.Description(detail.description)) +

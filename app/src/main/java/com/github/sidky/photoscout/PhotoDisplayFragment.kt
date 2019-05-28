@@ -41,16 +41,19 @@ class PhotoDisplayFragment : Fragment() {
         binding.info.addItemDecoration(decoration)
 
         infoAdapter.onBookmarked.observe(this, Observer {
-            runBlocking {
-                withContext(Dispatchers.Default) {
-                    photoDetailViewModel.bookmark(photoDetailViewModel.photoId, this@PhotoDisplayFragment)
-                }
+            GlobalScope.launch(Dispatchers.Default) {
+                photoDetailViewModel.bookmark(photoDetailViewModel.photoId, this@PhotoDisplayFragment)
             }
         })
 
         photoDetailViewModel.detail.observe(this, Observer {
             GlobalScope.launch(Dispatchers.Default) {
-                infoAdapter.update(it)
+                if (it != null) {
+                    infoAdapter.update(it)
+                } else {
+                    safeArgs = PhotoDisplayFragmentArgs.fromBundle(arguments!!)
+                    Timber.e("Detail can't be null. id: ${safeArgs.photoId}")
+                }
             }
         })
 
@@ -59,6 +62,8 @@ class PhotoDisplayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         safeArgs = PhotoDisplayFragmentArgs.fromBundle(arguments!!)
+
+        Timber.tag("PHOTO").i("ID: ${safeArgs.photoId}")
 
         GlobalScope.launch(Dispatchers.Main) {
             Timber.d("ID: ${safeArgs.photoId}")

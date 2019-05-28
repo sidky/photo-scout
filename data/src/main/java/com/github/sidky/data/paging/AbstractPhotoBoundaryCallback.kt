@@ -5,6 +5,8 @@ import androidx.work.*
 import com.github.sidky.data.converter.WorkResultUtil
 import com.github.sidky.data.dao.LoadingState
 import com.github.sidky.data.dao.PhotoThumbnail
+import com.github.sidky.data.dao.SearchType
+import timber.log.Timber
 
 abstract class AbstractPhotoBoundaryCallback<T>(private val loadingState: LoadingState) : PagedList.BoundaryCallback<T>() {
 
@@ -20,14 +22,20 @@ abstract class AbstractPhotoBoundaryCallback<T>(private val loadingState: Loadin
         WorkManager.getInstance()
     }
 
+    abstract fun isValidState(loadingState: LoadingState): Boolean
     abstract fun firstPageLoader(): OneTimeWorkRequest
     abstract fun nextPageLoader(page: Int): OneTimeWorkRequest
 
     override fun onZeroItemsLoaded() = firstPage()
 
     fun firstPage() {
+        if (!isValidState(loadingState)) {
+            Timber.tag("PHOTO").i("Finished: Cancel first page for ${javaClass.name}")
+            return
+        }
         val request = firstPageLoader() //buildRequest<InterestingFirstPageLoader>("page:1")
         workmanager.cancelAllWorkByTag(TAG_LOADER)
+        Timber.tag("PHOTO").i("Finished: scheduling first page for ${javaClass.name}")
         workmanager.beginUniqueWork("loader", ExistingWorkPolicy.KEEP, request).enqueue()
     }
 
@@ -35,11 +43,18 @@ abstract class AbstractPhotoBoundaryCallback<T>(private val loadingState: Loadin
 
     fun loadMore() {
 
+        if (!isValidState(loadingState)) {
+            Timber.tag("PHOTO").i("Finished: Cancel next page for ${javaClass.name}")
+            return
+        }
+
         if (!loadingState.hasNext) {
             return
         }
 
         val page = loadingState.next
+
+        Timber.tag("PHOTO").i("Finished: scheduling next page for ${javaClass.name}")
 
         val request = nextPageLoader(page) //buildRequest<InterestingNextPageLoader>("photo:$page", input)
         WorkManager.getInstance().beginUniqueWork("loader", ExistingWorkPolicy.KEEP, request).enqueue()
@@ -64,6 +79,9 @@ abstract class AbstractPhotoBoundaryCallback<T>(private val loadingState: Loadin
 }
 
 class InterestingPhotoBoundaryCallback(loadingState: LoadingState) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
+    override fun isValidState(loadingState: LoadingState): Boolean =
+        loadingState.searchType == SearchType.INTERESTING && loadingState.boundingBox == null
+
     override fun firstPageLoader(): OneTimeWorkRequest = buildRequest<InterestingFirstPageLoader>("page:1")
 
     override fun nextPageLoader(page: Int): OneTimeWorkRequest =
@@ -71,6 +89,9 @@ class InterestingPhotoBoundaryCallback(loadingState: LoadingState) : AbstractPho
 }
 
 class InterestingAtLocationPhotoBoundaryCallback(private val location: BoundingBox, loadingState: LoadingState) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
+    override fun isValidState(loadingState: LoadingState): Boolean =
+        loadingState.searchType == SearchType.INTERESTING && loadingState.boundingBox != null
+
     override fun firstPageLoader(): OneTimeWorkRequest = buildRequest<InterestingAtLocationFirstPageLoader>("page:1", InterestingAtLocationArgUtil.toDataBuilder(location).build())
 
     override fun nextPageLoader(page: Int): OneTimeWorkRequest =
@@ -78,6 +99,9 @@ class InterestingAtLocationPhotoBoundaryCallback(private val location: BoundingB
 }
 
 class SearchPhotoBoundaryCallback(private val query: String, loadingState: LoadingState) : AbstractPhotoBoundaryCallback<PhotoThumbnail>(loadingState) {
+    override fun isValidState(loadingState: LoadingState): Boolean =
+        loadingState.searchType == SearchType.SEARCH
+
     override fun firstPageLoader(): OneTimeWorkRequest =
         buildRequest<SearchFirstPageLoader>("page:1", WorkResultUtil.query(query))
 

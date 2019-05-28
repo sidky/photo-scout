@@ -45,5 +45,6 @@ class ApolloDetailToModelConverter(
                 t.camera(),
                 tagConverter.convertNullable(t.tags()) ?: emptyList(),
                 exifConverter.convertNullable(t.exif()) ?: emptyList(),
-                locationConverter.convertNullable(t.location()))
+                locationConverter.convertNullable(t.location()),
+                t.bookmarked())
 }

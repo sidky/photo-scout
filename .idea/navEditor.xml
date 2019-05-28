@@ -8,6 +8,27 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="loginFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-482" />
+                            <option name="y" value="95" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_authenticated">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="photoDisplayFragment">
                     <value>
                       <LayoutPositions>
@@ -25,12 +46,17 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="108" />
-                            <option name="y" value="4" />
+                            <option name="x" value="-77" />
+                            <option name="y" value="-104" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_map">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_photoListFragment_to_photoDisplayFragment">
                               <value>
                                 <LayoutPositions />
@@ -53,6 +79,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_display">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_list">
                               <value>
                                 <LayoutPositions />
                               </value>

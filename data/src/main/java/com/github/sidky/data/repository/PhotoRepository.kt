@@ -15,6 +15,8 @@ import com.github.sidky.data.dao.ThumbnailWithLocation
 import com.github.sidky.data.operation.BookmarkPhoto
 import com.github.sidky.data.paging.*
 import com.github.sidky.photoscout.graphql.PhotoDetailQuery
+import kotlinx.coroutines.*
+import timber.log.Timber
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -36,6 +38,10 @@ class PhotoRepository(
     fun loadInteresting(): Listing {
         loadingState.resetToInteresting()
 
+        WorkManager.getInstance().cancelAllWorkByTag(AbstractPhotoBoundaryCallback.TAG_LOADER)
+
+        Timber.tag("PHOTO").i("loadInteresting")
+
         val cb = InterestingPhotoBoundaryCallback(loadingState)
 
         val liveData = LivePagedListBuilder(dao.thumbnails(200), pagedListConfig).setBoundaryCallback(cb).build()
@@ -44,7 +50,10 @@ class PhotoRepository(
     }
 
     fun loadInteresting(location: BoundingBox): Listing {
+        Timber.tag("PHOTO").i("loadInterestingAtLocation")
         loadingState.resetToInteresting(location)
+
+        WorkManager.getInstance().cancelAllWorkByTag(AbstractPhotoBoundaryCallback.TAG_LOADER)
 
         val cb = InterestingAtLocationPhotoBoundaryCallback(location, loadingState)
 
@@ -55,6 +64,8 @@ class PhotoRepository(
 
     fun loadSearch(query: String): Listing {
         loadingState.resetToSearch(query)
+
+        WorkManager.getInstance().cancelAllWorkByTag(AbstractPhotoBoundaryCallback.TAG_LOADER)
 
         val cb = SearchPhotoBoundaryCallback(query, loadingState)
 
@@ -76,12 +87,14 @@ class PhotoRepository(
 
 
         return suspendCoroutine<Boolean> { cont ->
-            WorkManager.getInstance().enqueue(req).state.observe(lifecycle, Observer<Operation.State> {
-                when (it) {
-                    is Operation.State.SUCCESS -> cont.resumeWith(Result.success(true))
-                    is Operation.State.FAILURE -> cont.resumeWith(Result.success(false))
-                }
-            })
+            GlobalScope.launch(Dispatchers.Main) {
+                WorkManager.getInstance().enqueue(req).state.observe(lifecycle, Observer<Operation.State> {
+                    when (it) {
+                        is Operation.State.SUCCESS -> cont.resumeWith(Result.success(true))
+                        is Operation.State.FAILURE -> cont.resumeWith(Result.success(false))
+                    }
+                })
+            }
         }
     }
 

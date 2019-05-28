@@ -2,11 +2,14 @@ package com.github.sidky.photoscout.login
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.github.sidky.data.apollo.TokenProvider
 import com.github.sidky.photoscout.BuildConfig
-import com.github.sidky.photoscout.PhotoScoutActivity
 import com.github.sidky.photoscout.R
 import com.github.sidky.photoscout.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -21,8 +24,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-
-class LoginActivity : AppCompatActivity() {
+class LoginFragment : Fragment() {
     lateinit var binding: ActivityLoginBinding
 
     val tokenProvider: TokenProvider by inject()
@@ -39,28 +41,43 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private val googleClient by lazy {
-        GoogleSignIn.getClient(this, gso)
+        GoogleSignIn.getClient(activity!!, gso)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DataBindingUtil.inflate(inflater, R.layout.activity_login, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (auth.currentUser != null) {
-            openApp()
+            authenticated()
         } else {
             googleLogin()
         }
     }
 
+
+    private fun authenticated() {
+        GlobalScope.launch(Dispatchers.Default) {
+            tokenProvider.initialize()
+
+            GlobalScope.launch(Dispatchers.Main) {
+                Timber.d("Token: %s", tokenProvider.token())
+                val arg = LoginFragmentDirections.actionAuthenticated()
+                findNavController().navigate(arg)
+            }
+        }
+    }
+
     private fun googleLogin() {
         val intent = googleClient.signInIntent
-        startActivityForResult(intent, RC_GOOGLE_SIGNIN)
+        startActivityForResult(intent, LoginActivity.RC_GOOGLE_SIGNIN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            RC_GOOGLE_SIGNIN -> {
+            LoginActivity.RC_GOOGLE_SIGNIN -> {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
 
                 try {
@@ -78,32 +95,19 @@ class LoginActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) {
+            .addOnCompleteListener(activity!!) {
                 if (it.isSuccessful) {
                     Timber.d("Successfully signed in: %s", auth.currentUser?.email)
 
-                    auth.currentUser?.getIdToken(false)?.addOnCompleteListener(this) {
+                    auth.currentUser?.getIdToken(false)?.addOnCompleteListener(activity!!) {
                         Timber.d("Token: %s", it.result?.token)
 
-                        openApp()
+                        authenticated()
                     }
                 } else {
                     Timber.e(it.exception, "Unable to sign in")
                 }
             }
-    }
-
-    private fun openApp() {
-        GlobalScope.launch(Dispatchers.Default) {
-            tokenProvider.initialize()
-
-            GlobalScope.launch(Dispatchers.Main) {
-                val intent = Intent(this@LoginActivity, PhotoScoutActivity::class.java)
-                startActivity(intent)
-
-                Timber.d("Token: %s", tokenProvider.token())
-            }
-        }
     }
 
     companion object {

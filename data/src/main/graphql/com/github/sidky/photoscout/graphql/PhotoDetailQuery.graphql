@@ -22,5 +22,6 @@ query PhotoDetailQuery($photoId: String!) {
             longitude
             accuracy
         }
+        bookmarked
     }
 }

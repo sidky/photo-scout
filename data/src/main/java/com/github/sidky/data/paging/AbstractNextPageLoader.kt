@@ -11,6 +11,7 @@ import com.github.sidky.data.dao.PhotoDAO
 import kotlinx.coroutines.runBlocking
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
+import timber.log.Timber
 
 abstract class AbstractNextPageLoader(
     context: Context,
@@ -38,6 +39,7 @@ abstract class AbstractNextPageLoader(
                     loadingState.hasNext = pagination?.hasNext() ?: false
                     loadingState.next = pagination?.next() ?: 0
 
+                    Timber.tag("PHOTO").i("Finished ${this@AbstractNextPageLoader.javaClass.name}")
                     if (dbPhotos != null) {
                         dao.insertPhotoWithURLS(dbPhotos)
                     }

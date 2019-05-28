@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import androidx.paging.PagedList
 import com.github.sidky.data.dao.PhotoThumbnail
 import com.github.sidky.data.paging.BoundingBox
+import com.github.sidky.data.repository.Listing
 import com.github.sidky.data.repository.PhotoDetail
 import com.github.sidky.data.repository.PhotoRepository
 import kotlinx.coroutines.GlobalScope
@@ -42,17 +43,12 @@ class PhotoListViewModel(private val repository: PhotoRepository) : ViewModel() 
         }
 
     fun loadInteresting() {
-        val listing = repository.loadInteresting()
         currentQuery = Query.Interesting()
-
-        listLiveData = listing.pagedList
+        loadPhotos()
     }
 
     fun search(query: String) {
-        val listing = repository.loadSearch(query)
         currentQuery = Query.Search(query)
-
-        listLiveData = listing.pagedList
     }
 
     suspend fun detail(photoId: String): PhotoDetail? {
@@ -63,7 +59,7 @@ class PhotoListViewModel(private val repository: PhotoRepository) : ViewModel() 
         val area = searchArea
         val query = this.currentQuery
 
-        when (query) {
+        val listing = when (query) {
             is Query.Interesting -> {
                 if (area != null) {
                     repository.loadInteresting(area)
@@ -74,13 +70,20 @@ class PhotoListViewModel(private val repository: PhotoRepository) : ViewModel() 
             is Query.Search -> {
                 repository.loadSearch(query.query)
             }
-
         }
+        updateListing(query, listing)
+    }
+
+    private fun updateListing(queryType: PhotoListViewModel.Query, listing: Listing) {
+        currentQuery = queryType
+        listLiveData = listing.pagedList
+
     }
 
     fun attach(lifecycleOwner: LifecycleOwner) {
         GlobalScope.launch {
-            loadInteresting()
+            currentQuery = Query.Interesting()
+            loadPhotos()
         }
         actionLiveData.observe(lifecycleOwner, Observer<Unit> { })
     }

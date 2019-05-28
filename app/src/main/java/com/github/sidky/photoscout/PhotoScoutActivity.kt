@@ -2,6 +2,7 @@ package com.github.sidky.photoscout
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -11,7 +12,7 @@ import com.github.sidky.photoscout.databinding.ActivityPhotoBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class PhotoListActivity : AppCompatActivity() {
+class PhotoScoutActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityPhotoBinding
 
@@ -23,17 +24,17 @@ class PhotoListActivity : AppCompatActivity() {
 
     private val destinationListener = NavController.OnDestinationChangedListener { _, destination, _ ->
         when (destination.id) {
-            R.id.photoDisplayFragment -> supportActionBar?.hide()
+            R.id.photoDisplayFragment, R.id.loginFragment -> supportActionBar?.hide()
             R.id.photoListFragment -> {
                 supportActionBar?.show()
                 menu?.findItem(R.id.grid)?.isVisible = false
                 menu?.findItem(R.id.map)?.isVisible = true
             }
-        }
-        if (destination.id == R.id.photoDisplayFragment) {
-            supportActionBar?.hide()
-        } else {
-            supportActionBar?.show()
+            R.id.photoMapFragment -> {
+                supportActionBar?.show()
+                menu?.findItem(R.id.grid)?.isVisible = true
+                menu?.findItem(R.id.map)?.isVisible = false
+            }
         }
     }
 
@@ -93,6 +94,14 @@ class PhotoListActivity : AppCompatActivity() {
                 photoViewModel.loadInteresting()
                 true
             }
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.map -> navHost.navController.navigate(PhotoListFragmentDirections.actionMap())
+            R.id.grid -> navHost.navController.navigate(PhotoMapFragmentDirections.actionList())
         }
         return true
     }

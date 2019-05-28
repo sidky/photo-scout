@@ -19,4 +19,5 @@ data class PhotoDetail(
     val camera: String?,
     val tags: List<Tag>,
     val exifs: List<Exif>,
-    val location: Location?)
+    val location: Location?,
+    val bookmarked: Boolean)

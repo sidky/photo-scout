@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/nav_graph" app:startDestination="@id/photoListFragment">
+            android:id="@+id/nav_graph" app:startDestination="@id/loginFragment">
     <fragment android:id="@+id/photoListFragment" android:name="com.github.sidky.photoscout.PhotoListFragment"
               android:label="PhotoListFragment">
         <action android:id="@+id/action_photoListFragment_to_photoDisplayFragment"
                 app:destination="@id/photoDisplayFragment"/>
+        <action android:id="@+id/action_map" app:destination="@id/photoMapFragment"/>
     </fragment>
     <fragment android:id="@+id/photoDisplayFragment" android:name="com.github.sidky.photoscout.PhotoDisplayFragment"
               android:label="PhotoDisplayFragment">
@@ -15,5 +16,10 @@
               android:label="PhotoMapFragment">
         <action android:id="@+id/action_display"
                 app:destination="@id/photoDisplayFragment"/>
+        <action android:id="@+id/action_list" app:destination="@id/photoListFragment"/>
+    </fragment>
+    <fragment android:id="@+id/loginFragment" android:name="com.github.sidky.photoscout.login.LoginFragment"
+              android:label="LoginFragment">
+        <action android:id="@+id/action_authenticated" app:destination="@id/photoListFragment"/>
     </fragment>
 </navigation>
